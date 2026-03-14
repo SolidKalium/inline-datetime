@@ -30,6 +30,7 @@ Example tooltip:
 * Basic defaults to display when Javascript is disabled
 * Basic semantic HTML classes to enable custom css
 * Auto-deduplicating things like the year or day when it is the same for the whole timespan in the user's timezone.
+* Provides [[Category:Pages with InlineDateTime errors]]
 
 **Not supported:**
 * Languages other than English
@@ -46,6 +47,7 @@ Example tooltip:
   * But: you can use a raw text override
 * Disable tooltip (other than by disabling js)
 * No support for showing seconds. We assume everything is minute-aligned.
+* No tooling for locating date-like entries on pages that haven't been wrapped in the template.
 
 
 ## Install and Configure

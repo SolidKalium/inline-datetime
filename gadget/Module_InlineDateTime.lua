@@ -17,6 +17,20 @@
 
 local p = {}
 
+local ERROR_CATEGORY = '[[Category:Pages with InlineDateTime errors]]'
+
+local function htmlEscape(s)
+    return s:gsub('&', '&amp;'):gsub('<', '&lt;'):gsub('>', '&gt;'):gsub('"', '&quot;')
+end
+
+local function hardErrorSpan()
+    return '<span class="dt-error dt-error-hard"></span>' .. ERROR_CATEGORY
+end
+
+local function softErrorSpan(display)
+    return '<span class="dt-error dt-error-soft">' .. htmlEscape(display) .. '</span>' .. ERROR_CATEGORY
+end
+
 -- Parse a datetime string like "2026-03-12 06:00 +8" or "2026-03-12 06:00"
 -- Returns { date = "2026-03-12", time = "06:00", tz = "+8" or nil }
 local function parseDatetime(s)
@@ -114,16 +128,32 @@ end
 
 function p.main(frame)
     local args = frame:getParent().args
-    local startStr = args['start'] or args[1]
-    local endStr = args['end'] or args[2]
+    local startStr = mw.text.trim(args['start'] or args[1] or '')
+    local endStr = mw.text.trim(args['end'] or args[2] or '')
     local server = args['server'] or ''
     local raw = args['raw'] or ''
 
-    local startParsed = parseDatetime(startStr)
-    local endParsed = parseDatetime(endStr)
+    -- Hard error: start is absent entirely; raw is meaningless without it
+    if startStr == '' then
+        return hardErrorSpan()
+    end
 
-    if not startParsed and raw == '' then
-        return '<span class="dt-error">InlineDateTime: invalid start parameter</span>'
+    local startParsed = parseDatetime(startStr)
+    local endProvided = endStr ~= ''
+    local endParsed = endProvided and parseDatetime(endStr) or nil
+
+    -- Soft error: start present but unparseable, or end present but unparseable.
+    -- Treat the pair as fully invalid; no half-valid state.
+    if not startParsed or (endProvided and not endParsed) then
+        local display
+        if raw ~= '' then
+            display = raw
+        elseif endProvided then
+            display = startStr .. ' \xe2\x80\x93 ' .. endStr
+        else
+            display = startStr
+        end
+        return softErrorSpan(display)
     end
 
     -- Build data attributes

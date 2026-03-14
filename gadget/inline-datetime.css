@@ -97,6 +97,22 @@
     white-space: nowrap;
 }
 
+/* === Error states === */
+
+/*
+ * dt-error-hard: start is missing entirely (no tooltip possible)
+ * dt-error-soft: start or end present but unparseable; inline text is shown as-is
+ * Both carry dt-error for shared styling.
+ * Wikis can add visible styling via .dt-error, .dt-error-hard, or .dt-error-soft.
+ * Use ::before on .dt-error to inject visible indicators without markup changes.
+ */
+/* Visible hint during MediaWiki edit preview */
+#wikiPreview .dt-error-hard,
+#wikiPreview .dt-error-soft {
+    outline: 2px dashed #c00;
+    outline-offset: 1px;
+}
+
 /* === Touch/mobile === */
 @media (hover: none) {
     .dt-inline.dt-has-tooltip {
