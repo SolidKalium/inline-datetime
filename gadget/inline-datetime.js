@@ -16,10 +16,29 @@
 ;(function () {
     'use strict';
 
-    var SERVERS = {
-        asia:     { label: 'Asia',      offsetMin: 8 * 60 },
-        americas: { label: 'Americas',  offsetMin: -5 * 60 }
-    };
+    var DEFAULT_SERVERS = [
+        { key: 'asia',     label: 'Asia',     offsetMin:  480 },
+        { key: 'americas', label: 'Americas', offsetMin: -300 }
+    ];
+
+    // Build SERVERS map from config page (window.inlineDatetimeConfig), falling
+    // back to DEFAULT_SERVERS if the config page has not been installed or is malformed.
+    var SERVERS = (function () {
+        var list = (
+            typeof window !== 'undefined' &&
+            window.inlineDatetimeConfig &&
+            Array.isArray(window.inlineDatetimeConfig.servers) &&
+            window.inlineDatetimeConfig.servers.length
+        ) ? window.inlineDatetimeConfig.servers : DEFAULT_SERVERS;
+        var map = {};
+        for (var i = 0; i < list.length; i++) {
+            var s = list[i];
+            if (s.key && s.label && typeof s.offsetMin === 'number') {
+                map[s.key] = { label: s.label, offsetMin: s.offsetMin };
+            }
+        }
+        return map;
+    }());
 
     var HANDLED_CLASS = 'dt-handled';
     var SERVER_LABEL = '(server)'; // inline label for server-relative times

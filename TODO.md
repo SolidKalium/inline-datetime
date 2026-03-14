@@ -2,11 +2,6 @@
 
 ## Now
 
-* Bugs
-  * The server configs are hardcoded, but should live in json.
-
-## Mid-term
-
 * verify usage documentation is aligned (specs, wiki doc page, visual test page)
 * Test the export file
   * Figure out what MediaWiki:Gadgets-definition could look like if auto-imported.

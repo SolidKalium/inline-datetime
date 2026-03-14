@@ -20,6 +20,11 @@ TEST_CASES_FALLBACK_MARKER = "<!-- BUILD:TEST-CASES-FALLBACK -->"
 
 EXPORT_PAGES = [
     {
+        "source": ROOT / "gadget" / "inline-datetime-config.js",
+        "title": "MediaWiki:Gadget-inline-datetime-config.js",
+        "ns": 8,
+    },
+    {
         "source": ROOT / "gadget" / "inline-datetime.js",
         "title": "MediaWiki:Gadget-inline-datetime.js",
         "ns": 8,

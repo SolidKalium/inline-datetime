@@ -17,6 +17,7 @@ This generates:
   * Embeds the current `gadget/inline-datetime.js` and `gadget/inline-datetime.css`
 * `dist/mediawiki-export.xml`
   * A MediaWiki XML export bundle containing:
+    * `MediaWiki:Gadget-inline-datetime-config.js`
     * `MediaWiki:Gadget-inline-datetime.js`
     * `MediaWiki:Gadget-inline-datetime.css`
     * `Module:InlineDateTime`
@@ -35,7 +36,7 @@ Do not manually edit `dist/index.html`. Rebuild it from the template instead.
 
 `dist/mediawiki-export.xml` can be imported with MediaWiki's import tools.
 
-The export intentionally does not include `MediaWiki:Gadgets-definition` because that page is site-specific. After importing the pages, update your target wiki's gadget definition/configuration to load the JS and CSS pages.
+The export intentionally does not include `MediaWiki:Gadgets-definition` because that page is site-specific. After importing, see the [Gadgets-definition and server configuration sections in README.md](README.md#gadgets-definition) for what to add.
 
 The optional `Template:IDT` alias is also not included in the export bundle. If a wiki wants the shorter template name, add it manually.
 

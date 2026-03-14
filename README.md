@@ -15,7 +15,7 @@ Example tooltip:
 
 **Supported:**
 * Multiple servers with distinct timezones
-  * Server names and timezones are the only global settings
+  * Server names and timezones are configured in `MediaWiki:Gadget-inline-datetime-config.js`
 * Two kinds of datetimes:
   * Single moment across servers (e.g. `04:00 +8`): usually server maintenance
     * Inline text: user's timezone
@@ -64,14 +64,38 @@ There are two ways to get the files onto a wiki:
   * Update `MediaWiki:Gadgets-definition` or your wiki's gadget config to load the gadget JS and CSS pages
 
 This repository's export file includes:
+* `MediaWiki:Gadget-inline-datetime-config.js`
 * `MediaWiki:Gadget-inline-datetime.js`
 * `MediaWiki:Gadget-inline-datetime.css`
 * `Module:InlineDateTime`
 * `Template:InlineDateTime`
 * `Template:InlineDateTime/doc`
 
-`MediaWiki:Gadgets-definition` is not included in the export because it is usually site-specific.
-[`Template:IDT`](gadget/Template_IDT.wikitext) is also not included in the export bundle; add it manually only if you want the shorter alias.
+`MediaWiki:Gadgets-definition` is not included in the export because it is site-specific.
+[`Template:IDT`](gadget/Template_IDT.wikitext) is also not included; add it manually only if you want the shorter alias.
+
+### Gadgets-definition
+
+After importing the pages, add an entry to `MediaWiki:Gadgets-definition`. A typical entry looks like:
+
+```mediawiki
+* inline-datetime[ResourceLoader|default|type=general]|Gadget-inline-datetime-config.js|Gadget-inline-datetime.js|Gadget-inline-datetime.css
+```
+
+Option notes:
+* `ResourceLoader` — registers the gadget as a ResourceLoader module for better performance and dependency support; remove this option if your wiki does not use ResourceLoader
+* `default` — enables the gadget for all users automatically; replace with `hidden` if you want it available but opt-in only
+* `type=general` — runs scripts in the page scope; required for this gadget to access the page DOM
+* The config file **must be listed before** the main JS file so it is executed first
+
+### Server configuration
+
+Edit `MediaWiki:Gadget-inline-datetime-config.js` after importing to set your wiki's servers. Each entry needs:
+* `key` — internal identifier used in the `|server=` template parameter
+* `label` — display name shown in tooltips
+* `offsetMin` — fixed UTC offset in minutes (e.g. UTC+8 = `480`, UTC-5 = `-300`)
+
+The gadget has no DST support; use fixed offsets only. The default config ships with Asia (UTC+8) and Americas (UTC-5).
 
 ### Styling
 The gadget emits semantic classes so it can inherit surrounding text styling while still allowing some customization.
