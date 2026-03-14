@@ -5,6 +5,7 @@ This is a Mediawiki gadget for game wikis with a few game servers in different t
 This gadget will format times and timespans as inline text with a tooltip (accessible on hover or tap) that translates the time to the user's local time. The information is kept minimal for compactness but expansion occurs as needed for precision.
 
 TODO image of a tooltip
+TODO link to demo page
 
 ## Features
 [Full specifications](specifications.md)
@@ -41,10 +42,11 @@ TODO image of a tooltip
 * Force year to be displayed, even for the current year
   * But: you can use a raw text override
 * Disable tooltip (other than by disabling js)
+* No support for showing seconds. We assume everything is minute-aligned.
+
 
 ## TODO
 * organize files. What's the normal way for a gadget?
-* AI directions?
 * usage documentation (specs, docs, visual test page)
   * Need to support at least on-wiki and on-web
 * improve visual test page
@@ -55,13 +57,17 @@ TODO image of a tooltip
   * Support enter-your-own call to lua? (may need wasm Lua...)
 * audit code for readability and obviousness
   * Maybe do a little work to make styling and other regions be better supported?
-  * Double check on deduping month.
   * What timezone formats are supported as inputs?
   * error visibility when given a bad (or likely bad) input?
-  * What actually happens when the language isn't english? Does the i18n date give non-english month names?
   * rename the lua to inline-datetime? Or maybe use a different text that mentions the tooltip? inline-datetime-tooltip? That's kind of long..
 * Bugs
   * Tooltip supports click to keep it open. Stays open when clicking again. Is that expected? Maybe close on second click? And/or just make it being open be tap only? Currently tabbable. Is that a good idea?
+* Undefined behavior (document the results)
+  * What if someone puts it in a header, in italics text, etc?
+  * How are we handling timezone abbreviation changes locally? e.g. DST starting/ending in the middle
+  * Did we handle no-JS formatting? Update spec if so.
+  * did the tooltip for raw text end up with three lines? Update spec.md if so.
+  * What actually happens when the language isn't english? Does the i18n date give non-english month names?
 
 ## Install and Configure
 

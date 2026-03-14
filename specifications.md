@@ -2,6 +2,79 @@
 
 For features included and not included, see the main [README.md](README.md#features)
 
+## Parameters
+Format: `{{dt|start=YYYY-MM-DD HH:MM|end=YYYY-MM-DD HH:MM OFFSET}}`
+
+All parameters are optional except `start`/`1`.
+
+* `start`/`1` and `end`/`2`: start and end times
+  * Kinds of time (input)
+    * Absolute time: a single moment affecting all servers simulateously
+      * A UTC offset like "+8" or "-5" is specified at the end of the string
+    * Server time: each server is affected when this is the server's local time
+      * No offset is specified or the offset is "server"
+* `server`: the tooltip will only list the specified server. Omit for all servers to be shown.
+* `raw`: text to show inline instead of the auto-formatted date time. JS will still build a tooltip from the start/end values.
+
+## Output
+
+There are two main parts of the display: the inline text and the tooltip.
+
+TODO example tooltip image (same as README)
+
+### Time formatting
+
+Time and timespan formatting is the same whether inline or in the tooltip.
+
+* Kinds of time (output)
+  * Visitor's time: displayed in the browser's timezone (e.g. "EDT")
+  * Specific server time: displayed in the server's timezone (e.g. "UTC+8")
+  * Generic server time: displayed with a timezone of "(server)"
+* Timezone deduplication
+  * When start and end are shown in the same timezone, it's only labelled at the end
+  * When they differ, each endpoint has a timezone label
+    * This could be one absolute time and one server time
+    * Or the visitor's timezone changes abbreviations (such as due to DST)
+* Current year hiding
+  * When the time (or full timespan) is in the same year (in the timezone it is displayed), then the year is hidden to save space.
+* Date format examples:
+  * `start` only: "Mar 29, 12:00 PM (server)" or "Mar 11, 6:00 PM EDT"
+  * `start` and `end` share a timezone and date: "Mar 11, 6:00 PM – 12:00 AM EDT"
+  * `start` and `end` share a timezone but not date: "Mar 11, 6:00 PM – Mar 12, 12:00 AM EDT"
+
+### Inline display behavior
+* The text is a time (or timespan) description that applies to all servers.
+  * Absolute time: the visitor's local time
+  * Server time: the generic server time
+* Inherits styling applied around it (e.g. bold or italics)
+  * If Javascript is enabled, affordances like a dashed underline are displayed to indicate there is a tooltip available.
+* If `raw` is specified, it is the inline text. `start` and `end` will only affect the tooltip.
+* If Javascript is disabled, the fallback value is shown. This is a non-localized description that applies to all servers. It uses the timezone given to the template.
+
+### Tooltip behavior
+* Each server gets its own line showing the time (or timespan) in a server-specific manner.
+  * Absolute time: the server's time when it is affected
+  * Server time: the visitor's local time when the server is affected
+* If `server` was specified, then only that server is shown in the tooltip.
+* If Javascript is disabled, the tooltip isn't available.
+
+## Architecture
+* Lua module (Module:DateTime)
+  * parses input
+  * generates fallback text
+  * emits structured HTML with data attributes
+* Template (Template:Dt)
+  * thin #invoke wrapper
+* JS gadget
+  * display logic
+  * user timezone detection
+  * tooltip construction
+  * Runs on DOMContentLoaded and on mw.hook('wikipage.content') for dynamic content
+* CSS gadget
+  * styling for inline, tooltip, and touch
+  * Uses CSS custom properties --dt-tooltip-bg and --dt-tooltip-fg for theme compatibility
+* Does not rely on other gadgets or extensions
+
 ## Design Requirements
 * Keep inputs simple
   * Complex inputs will prevent the gadget from being used
@@ -25,18 +98,6 @@ For features included and not included, see the main [README.md](README.md#featu
     * Long lines are accepted since we're already keeping content tight.
 * Must look ok when Javascript is disabled
 
-## Parameters
-Example: `{{dt|start=YYYY-MM-DD HH:MM|end=YYYY-MM-DD HH:MM}}`
-
-All parameters are optional except `start`/`1`.
-
-* `start` (or `1`) and `end` (or `2`): start and end times
-  * Offset is part of the datetime string.
-    * An absolute time should have a UTC offset specified at the end like `+8` or `-5`
-    * If no UTC offset is given or the string ends with `server`, then the the time is assumed to be in each server's local time.
-* `server`: the tooltip will only list the specified server. Omit for all servers to be shown.
-* `raw`: text to show inline instead of the auto-formatted date time. JS will still build a tooltip from the start/end values.
-
 ## Considerations
 
 ### Style considerations
@@ -46,33 +107,3 @@ All parameters are optional except `start`/`1`.
 
 ### API considerations
 * Decided to keep the timezone in the same string as the input datetime. This ensures the timezone is specified directly next to the datetime. It avoids dealing with a global `tz` and specific `start-tz` and `end-tz` parameters that might surprise an editor.
-
-
-## AI's summary
-
-### Inline display behavior
-
-* Absolute times: shown in the reader's browser local timezone with their TZ abbreviation (e.g., "EDT").
-* Server times: shown as the wall-clock value with "(server)" label.
-* Single point: "Mar 29, 12:00 PM (server)" or "Mar 11, 6:00 PM EDT"
-* Range, same day in display TZ: date shown once, times collapsed. "Mar 11, 6:00 PM – 12:00 AM EDT"
-* Range, different days: both dates shown. "Mar 11, 6:00 PM – Mar 12, 12:00 AM EDT"
-* TZ label deduplication: when both endpoints share the same label, it appears once at the end of the range. When they differ (mixed absolute/server), each endpoint gets its own.
-* raw= mode: inline text is untouched. JS only adds tooltip.
-
-### Tooltip behavior
-
-* Always one line per server (not separate Start/End sections).
-* Each line shows the full range (or single point) from that server's perspective.
-* For server-time inline: tooltip shows reader's local time per server.
-* For absolute-time inline: tooltip shows each server's wall-clock time.
-* Same-day collapsing and TZ deduplication apply within tooltip lines too.
-* server= parameter filters which server lines appear.
-
-### Architecture
-
-* Lua module (Module:DateTime): parses editor input, emits structured HTML with data attributes, generates fallback text.
-* Template (Template:Dt): thin #invoke wrapper.
-* JS gadget: all display logic, timezone detection, tooltip construction. Runs on DOMContentLoaded and on mw.hook('wikipage.content') for dynamic content.
-* CSS gadget: styling for inline, tooltip, and touch. Uses CSS custom properties --dt-tooltip-bg and --dt-tooltip-fg for theme compatibility.
-* Existing wiki infrastructure is not touched. TZclock, countdown template, and clock gadgets remain independent.
