@@ -79,9 +79,10 @@ Time and timespan formatting is the same whether inline or in the tooltip.
 * **Escape**: closes an open tooltip and stops event propagation so the key does not bubble to page-level handlers.
 
 ### Pointer interaction
-* A single click toggles the tooltip open or closed.
-* Hovering also shows the tooltip, so mouse users who do not click still see it.
+* A single click toggles the tooltip open or closed. Note: clicking to close while the cursor is still over the element looks like a no-op because hover immediately re-shows the tooltip; the `dt-open` state is still cleared correctly. To disable hover-triggered display, override with `.dt-inline.dt-has-tooltip:hover .dt-tooltip { display: none; }` in a local stylesheet.
+* Clicking outside an open tooltip closes it.
 * `cursor: pointer` provides a visual affordance that the element is interactive.
+* Hovering shows the tooltip passively without requiring a click.
 
 ### What is not in scope
 * The tooltip content is informational only and has no interactive elements, so focus does not move into it.

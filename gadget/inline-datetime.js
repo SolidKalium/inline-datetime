@@ -512,12 +512,28 @@
         el.classList.add(HANDLED_CLASS);
     }
 
+    function closeAllExcept(target) {
+        var open = document.querySelectorAll('.dt-inline.dt-open');
+        for (var i = 0; i < open.length; i++) {
+            if (open[i] !== target) {
+                open[i].classList.remove('dt-open');
+                open[i].setAttribute('aria-expanded', 'false');
+            }
+        }
+    }
+
     function init() {
         var elements = document.querySelectorAll('.dt-inline:not(.' + HANDLED_CLASS + ')');
         for (var i = 0; i < elements.length; i++) {
             processElement(elements[i]);
         }
     }
+
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.dt-inline.dt-open')) {
+            closeAllExcept(null);
+        }
+    });
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
