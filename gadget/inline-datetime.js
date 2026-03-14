@@ -23,6 +23,11 @@
 
     var HANDLED_CLASS = 'dt-handled';
     var SERVER_LABEL = '(server)'; // inline label for server-relative times
+    var FORMATTER_CACHE = {};
+    var MONTH_INDEX = {
+        Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5,
+        Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11
+    };
 
     // --- Utility functions ---
 
@@ -48,7 +53,7 @@
         return new Date(isoStr + 'Z').getTime();
     }
 
-    function formatInOffset(utcMs, offsetMin, forceYear) {
+    function formatOffsetFields(utcMs, offsetMin) {
         var d = new Date(utcMs + offsetMin * 60000);
         var months = [
             'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -63,32 +68,105 @@
         var h12 = h % 12 || 12;
         var timeCore = h12 + ':' + (m < 10 ? '0' : '') + m;
 
-        var currentYear = new Date().getFullYear();
-        var showYear = forceYear || (year !== currentYear);
-        var dateStr = month + ' ' + day;
-        if (showYear) {
-            dateStr += ', ' + year;
-        }
-
         return {
-            date: dateStr,
+            month: month,
             timeCore: timeCore,
             ampm: ampm,
             year: year,
             monthIdx: d.getUTCMonth(),
             day: day,
-            full: dateStr + ', ' + timeCore + ' ' + ampm
+            tzLabel: ''
         };
     }
 
-    function needForceYear(startUtcMs, startOff, endUtcMs, endOff) {
-        if (endUtcMs === null) return false;
-        var sy = new Date(startUtcMs + startOff * 60000).getUTCFullYear();
-        var ey = new Date(endUtcMs + endOff * 60000).getUTCFullYear();
-        return sy !== ey;
+    function getFormatter(cacheKey, options) {
+        if (!FORMATTER_CACHE[cacheKey]) {
+            FORMATTER_CACHE[cacheKey] = new Intl.DateTimeFormat('en-US', options);
+        }
+        return FORMATTER_CACHE[cacheKey];
     }
 
-    function getUserTZ() {
+    function formatTimeZoneFields(utcMs, timeZone) {
+        var formatter = getFormatter('full|' + timeZone, {
+            timeZone: timeZone,
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true,
+            timeZoneName: 'short'
+        });
+        var parts = formatter.formatToParts(new Date(utcMs));
+        var values = {};
+        for (var i = 0; i < parts.length; i++) {
+            if (parts[i].type !== 'literal') {
+                values[parts[i].type] = parts[i].value;
+            }
+        }
+
+        return {
+            month: values.month,
+            timeCore: values.hour + ':' + values.minute,
+            ampm: values.dayPeriod ? values.dayPeriod.toUpperCase() : '',
+            year: parseInt(values.year, 10),
+            monthIdx: MONTH_INDEX[values.month],
+            day: parseInt(values.day, 10),
+            tzLabel: values.timeZoneName || ''
+        };
+    }
+
+    function formatFields(fields, showYear) {
+        var dateStr = fields.month + ' ' + fields.day;
+        if (showYear) {
+            dateStr += ', ' + fields.year;
+        }
+        return {
+            date: dateStr,
+            timeCore: fields.timeCore,
+            ampm: fields.ampm,
+            year: fields.year,
+            monthIdx: fields.monthIdx,
+            day: fields.day,
+            tzLabel: fields.tzLabel,
+            full: dateStr + ', ' + fields.timeCore + ' ' + fields.ampm
+        };
+    }
+
+    function getCurrentYearForTarget(target) {
+        return getDisplayFields(Date.now(), target).year;
+    }
+
+    function getDisplayFields(utcMs, target) {
+        if (target.kind === 'time-zone') {
+            return formatTimeZoneFields(utcMs, target.timeZone);
+        }
+        var fields = formatOffsetFields(utcMs, target.offsetMin);
+        fields.tzLabel = target.label || '';
+        return fields;
+    }
+
+    function getTargetLabel(target, utcMs) {
+        return getDisplayFields(utcMs, target).tzLabel;
+    }
+
+    function createFixedOffsetTarget(offsetMin, label) {
+        return {
+            kind: 'fixed-offset',
+            offsetMin: offsetMin,
+            label: label || formatOffset(offsetMin)
+        };
+    }
+
+    function getResolvedTimeZone() {
+        try {
+            return new Intl.DateTimeFormat().resolvedOptions().timeZone || null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function getFallbackSystemTZ() {
         var now = new Date();
         var offsetMin = -now.getTimezoneOffset();
         var abbr = '';
@@ -107,7 +185,19 @@
             abbr = 'UTC' + sign + Math.floor(absOff / 60);
             if (absOff % 60) abbr += ':' + (absOff % 60 < 10 ? '0' : '') + (absOff % 60);
         }
-        return { offsetMin: offsetMin, abbr: abbr };
+        return createFixedOffsetTarget(offsetMin, abbr);
+    }
+
+    function getUserTZ() {
+        var override = (typeof window !== 'undefined' && window.__INLINE_DATETIME_TEST_TIMEZONE) || '';
+        var timeZone = override || getResolvedTimeZone();
+        if (timeZone) {
+            return {
+                kind: 'time-zone',
+                timeZone: timeZone
+            };
+        }
+        return getFallbackSystemTZ();
     }
 
     function formatOffset(offsetMin) {
@@ -129,8 +219,8 @@
      * Server time: "(server)"
      * Absolute: user's TZ abbr like "EDT"
      */
-    function inlineTzLabel(tzStr, userTZ) {
-        return (tzStr === 'server') ? SERVER_LABEL : userTZ.abbr;
+    function inlineTzLabel(tzStr, userTZ, utcMs) {
+        return (tzStr === 'server') ? SERVER_LABEL : getTargetLabel(userTZ, utcMs);
     }
 
     // --- DOM building helpers ---
@@ -177,23 +267,35 @@
     function buildInlineDisplay(startUtcMs, startTz, endUtcMs, endTz, userTZ) {
         var frag = document.createDocumentFragment();
         var startIsServer = (startTz === 'server');
-        var endIsServer = endTz ? (endTz === 'server') : null;
-        var startOff = startIsServer ? 0 : userTZ.offsetMin;
-        var endOff = (endUtcMs !== null) ? (endIsServer ? 0 : userTZ.offsetMin) : 0;
-        var forceYear = needForceYear(startUtcMs, startOff, endUtcMs, endOff);
-
-        var startFmt = formatInOffset(startUtcMs, startOff, forceYear);
-        var startLabel = inlineTzLabel(startTz, userTZ);
+        var startTarget = startIsServer ? createFixedOffsetTarget(0, SERVER_LABEL) : userTZ;
+        var startFields = getDisplayFields(startUtcMs, startTarget);
+        var startLabel = inlineTzLabel(startTz, userTZ, startUtcMs);
 
         // Single point
         if (endUtcMs === null) {
-            frag.appendChild(buildDateTimeNodes(startFmt, 'dt-'));
+            var startFmtSingle = formatFields(
+                startFields,
+                startFields.year !== getCurrentYearForTarget(startTarget)
+            );
+            startFmtSingle.tzLabel = startLabel;
+            frag.appendChild(buildDateTimeNodes(startFmtSingle, 'dt-'));
             frag.appendChild(buildTzNode(startLabel, 'dt-'));
             return frag;
         }
 
-        var endFmt = formatInOffset(endUtcMs, endOff, forceYear);
-        var endLabel = inlineTzLabel(endTz, userTZ);
+        var endIsServer = endTz ? (endTz === 'server') : null;
+        var endTarget = endIsServer ? createFixedOffsetTarget(0, SERVER_LABEL) : userTZ;
+        var endFields = getDisplayFields(endUtcMs, endTarget);
+        var forceYear = startFields.year !== endFields.year;
+        var startFmt = formatFields(
+            startFields,
+            forceYear || startFields.year !== getCurrentYearForTarget(startTarget)
+        );
+        var endFmt = formatFields(
+            endFields,
+            forceYear || endFields.year !== getCurrentYearForTarget(endTarget)
+        );
+        var endLabel = inlineTzLabel(endTz, userTZ, endUtcMs);
         var sameTzLabel = (startLabel === endLabel);
 
         // Start datetime
@@ -233,20 +335,24 @@
             var srv = SERVERS[key];
 
             // Compute start in display tz
-            var startDisplayUtc, startOff, startTzLabel;
+            var startDisplayUtc, startTarget, startTzLabel;
             if (startIsServer) {
                 startDisplayUtc = startUtcMs - srv.offsetMin * 60000;
-                startOff = userTZ.offsetMin;
-                startTzLabel = userTZ.abbr;
+                startTarget = userTZ;
+                startTzLabel = getTargetLabel(userTZ, startDisplayUtc);
             } else {
                 startDisplayUtc = startUtcMs;
-                startOff = srv.offsetMin;
-                startTzLabel = formatOffset(srv.offsetMin);
+                startTarget = createFixedOffsetTarget(srv.offsetMin, formatOffset(srv.offsetMin));
+                startTzLabel = startTarget.label;
             }
 
             // Single point
             if (endUtcMs === null) {
-                var sf = formatInOffset(startDisplayUtc, startOff, false);
+                var startFields = getDisplayFields(startDisplayUtc, startTarget);
+                var sf = formatFields(
+                    startFields,
+                    startFields.year !== getCurrentYearForTarget(startTarget)
+                );
                 var singleFrag = document.createDocumentFragment();
                 singleFrag.appendChild(buildDateTimeNodes(sf, 'dt-tt-'));
                 singleFrag.appendChild(buildTzNode(startTzLabel, 'dt-tt-'));
@@ -255,20 +361,28 @@
             }
 
             // Compute end in display tz
-            var endDisplayUtc, endOff, endTzLabel;
+            var endDisplayUtc, endTarget, endTzLabel;
             if (endIsServer) {
                 endDisplayUtc = endUtcMs - srv.offsetMin * 60000;
-                endOff = userTZ.offsetMin;
-                endTzLabel = userTZ.abbr;
+                endTarget = userTZ;
+                endTzLabel = getTargetLabel(userTZ, endDisplayUtc);
             } else {
                 endDisplayUtc = endUtcMs;
-                endOff = srv.offsetMin;
-                endTzLabel = formatOffset(srv.offsetMin);
+                endTarget = createFixedOffsetTarget(srv.offsetMin, formatOffset(srv.offsetMin));
+                endTzLabel = endTarget.label;
             }
 
-            var forceYear = needForceYear(startDisplayUtc, startOff, endDisplayUtc, endOff);
-            var sf2 = formatInOffset(startDisplayUtc, startOff, forceYear);
-            var ef = formatInOffset(endDisplayUtc, endOff, forceYear);
+            var startFields2 = getDisplayFields(startDisplayUtc, startTarget);
+            var endFields = getDisplayFields(endDisplayUtc, endTarget);
+            var forceYear = startFields2.year !== endFields.year;
+            var sf2 = formatFields(
+                startFields2,
+                forceYear || startFields2.year !== getCurrentYearForTarget(startTarget)
+            );
+            var ef = formatFields(
+                endFields,
+                forceYear || endFields.year !== getCurrentYearForTarget(endTarget)
+            );
             var sameTz = (startTzLabel === endTzLabel);
 
             var rangeFrag = document.createDocumentFragment();
@@ -390,6 +504,9 @@
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
+    }
+    if (typeof window !== 'undefined') {
+        window.addEventListener('inline-datetime-rerender', function () { init(); });
     }
     if (typeof mw !== 'undefined' && mw.hook) {
         mw.hook('wikipage.content').add(function () { init(); });

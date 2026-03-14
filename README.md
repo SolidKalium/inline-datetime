@@ -5,6 +5,8 @@ This is a Mediawiki gadget for game wikis with a few game servers in different t
 This gadget will format times and timespans as inline text with a tooltip (accessible on hover or tap) that translates the time to the user's local time. The information is kept minimal for compactness but expansion occurs as needed for precision.
 
 TODO image of a tooltip
+
+Push to git, then:
 TODO link to demo page
 TODO link to xml download
 
@@ -62,10 +64,10 @@ TODO link to xml download
   * Maybe do a little work to make styling and regional time formats be better supported?
   * What timezone formats are supported as inputs?
   * error visibility when given a bad (or likely bad) input?
-  * rename the lua to inline-datetime? Or maybe use a different text that mentions the tooltip? inline-datetime-tooltip? That's kind of long..
 * Bugs
   * Tooltip supports click to open. Stays open when clicking again. Is that expected? Maybe close on second click? And/or just make it being open be tap only? Currently tabbable. Is that a good idea?
   * The server configs are hardcoded, but should live in json.
+  * Some timezones like british time don't have good short names? Check why it does that. Probably don't force it to accept shorthand.
 * Undefined behavior (document the results)
   * What if someone puts it in a header, in italics text, etc?
   * How are we handling timezone abbreviation changes locally? e.g. DST starting/ending in the middle. It doesn't look like it...
@@ -73,6 +75,8 @@ TODO link to xml download
 * Change all time zone to timezone, in-line to inline?
 * Decide on file names and project name
 * Tooling or advice to help find dates that aren't using the template?
+  * rename the lua to inline-datetime? Or maybe use a different text that mentions the tooltip? inline-datetime-tooltip? That's kind of long..
+
 
 
 ## Install and Configure
