@@ -9,10 +9,10 @@ All parameters are optional except `start`/`1`.
 
 * `start`/`1` and `end`/`2`: start and end times
   * Kinds of time (input)
-    * Absolute time: a single moment affecting all servers simulateously
+    * Absolute time: a single moment affecting all servers simultaneously
       * A UTC offset like "+8" or "-5" is specified at the end of the string
     * Server time: each server is affected when this is the server's local time
-      * No offset is specified or the offset is "server"
+      * No offset is specified *or* the offset is "server"
 * `server`: the tooltip will only list the specified server. Omit for all servers to be shown.
 * `raw`: text to show inline instead of the auto-formatted date time. JS will still build a tooltip from the start/end values.
 
