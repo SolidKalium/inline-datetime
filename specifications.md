@@ -62,6 +62,10 @@ Time and timespan formatting is the same whether inline or in the tooltip.
 * If `server` was specified, then only that server is shown in the tooltip.
 * If Javascript is disabled, the tooltip isn't available.
 
+### Testing
+* To make testing easier, a fake browser timezone can be set.
+  * Note: Intl provides short timezone descriptions like "GMT+1" instead of "BST" when the timezone isn't common in the browser's locale (e.g. "en-US" instead of "en-GB"). This is to prevent confusion from multiple timezones using the same abbreviation.
+
 ## Architecture
 * Lua module (Module:DateTime)
   * parses input
