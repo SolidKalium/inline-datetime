@@ -18,18 +18,18 @@ TODO link to xml download
 [Development notes](DEVELOPMENT.md)
 
 **Supported:**
-* Multiple servers with distinct time zones
+* Multiple servers with distinct timezones
   * Server names and timezones are the only global settings
 * Two kinds of datetimes:
   * Single moment across servers (e.g. `04:00 +8`): usually server maintenance
-    * In-line text: user's timezone
+    * Inline text: user's timezone
     * Tooltip: servers' timezones
   * Same server time across servers (e.g. `04:00 server`): usually daily & weekly resets
-    * In-line text: the server-relative time
+    * Inline text: the server-relative time
     * Tooltip: when each server observes that time, according to the user's timezone
 * Single times or timespans (can mix and match date kinds)
 * Specifying a single server for the tooltip instead of showing all of them
-* Specifying alternate text to display in-line.
+* Specifying alternate text to display inline.
   * This could be used to provide a tooltip on patch notes where you want the displayed text to match the official description of the time.
 * Basic defaults to display when Javascript is disabled
 * Basic semantic HTML classes to enable custom css
@@ -39,10 +39,10 @@ TODO link to xml download
 * Languages other than English
 * Time formatting other than American
 * Events that occur at unrelated times on different servers
-  * But: you can use the single server capability to list them separately in-line.
+  * But: you can use the single server capability to list them separately inline.
 * Live changes to the user's timezone after page load
 * No user settings: keeping it simple and avoiding confusion
-  * Can't display a specific server's info in-line
+  * Can't display a specific server's info inline
   * Can't hide a server's info in the tooltip
     * The tooltip may be unwieldy if displaying a large number of servers
 * A server that changes timezone (either due to daylight savings time or permanently on some date)
@@ -89,7 +89,7 @@ Useful CSS variables:
 
 ## Q & A
 * What alternatives were considered?
-  * [**TZclock** gadget](https://dev.fandom.com/wiki/TZclock): This displays the current time in a specified time zone. It can't display a specific moment in time in the user's timezone. It uses its own implementation of calculating time zones instead of using built in capabilities in Lua or Javascript.
+  * [**TZclock** gadget](https://dev.fandom.com/wiki/TZclock): This displays the current time in a specified timezone. It can't display a specific moment in time in the user's timezone. It uses its own implementation of calculating timezones instead of using built in capabilities in Lua or Javascript.
   * [**clock**](https://endfield.wiki.gg/wiki/MediaWiki:Gadgets/clock/main.css) and [**clockScripts**](https://endfield.wiki.gg/wiki/MediaWiki:Gadgets/clockScripts/main.js) gadgets: This shows the current server times and countdowns until resets. It doesn't support inline display or showing specific times or timespans.
   * [**countdown** script](https://dev.fandom.com/wiki/Countdown): This inserts a live countdown into a line of text. When the time is in the past, a different message is shown.
     * Note: For events with a known timespan (e.g. Jan 6-7) starting in the future (e.g. today is Jan 1), it isn't possible to set a single countdown. Instead, the countdown must be set to start counting down until the start, after which it will automatically show a static message like "event is live!". Then if you want to show a countdown until the event ends, you need to edit in a replacement countdown.

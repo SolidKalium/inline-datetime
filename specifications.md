@@ -87,7 +87,7 @@ Time and timespan formatting is the same whether inline or in the tooltip.
 * Keep inputs simple
   * Complex inputs will prevent the gadget from being used
   * Inputs should be flexible enough to not require inhuman consistency, but should still be limited enough that there aren't weird edge cases.
-* Focus on a core use case: a tooltip for times and timespans that translates time zones
+* Focus on a core use case: a tooltip for times and timespans that translates timezones
   * Let other templates wrap the script if they need other features like:
     * Insert the date in a template with text, possibly with a countdown added dynamically
     * Parse a raw unformatted changelog date description and automatically create the tooltip
@@ -100,7 +100,7 @@ Time and timespan formatting is the same whether inline or in the tooltip.
 * Keep output style easy to read
   * The text should be easy to scan quickly
   * Things like timezone are valuable and must be part of the output, but they aren't the core info being communicated, so they should have lower emphasis.
-  * Times should have the same styling whether in-line or in the tooltip.
+  * Times should have the same styling whether inline or in the tooltip.
   * Styles should work in both light and dark modes.
   * Use nowrap to keep the full start and full end times each on a single line. Hopefully they are both on the same line, but they may need to be split on narrow displays.
     * Long lines are accepted since we're already keeping content tight.

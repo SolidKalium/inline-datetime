@@ -22,7 +22,6 @@
   * What if someone puts it in a header, in italics text, etc?
   * How are we handling timezone abbreviation changes locally? e.g. DST starting/ending in the middle. It doesn't look like it...
   * What actually happens when the language isn't english? Does the i18n date give non-english month names?
-* Change all time zone to timezone, in-line to inline?
 * Decide on file names and project name
 * Tooling or advice to help find dates that aren't using the template?
   * rename the lua to inline-datetime? Or maybe use a different text that mentions the tooltip? inline-datetime-tooltip? That's kind of long..
