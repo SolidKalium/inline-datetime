@@ -1,4 +1,0 @@
-{{#invoke:DateTime|main}}<noinclude>
-{{documentation}}
-[[Category:DateTime templates]]
-</noinclude>

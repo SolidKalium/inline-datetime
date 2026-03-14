@@ -1,7 +1,7 @@
 /**
  * DateTime inline converter
  *
- * Data attributes (emitted by Module:DateTime / Template:Dt):
+ * Data attributes (emitted by Module:InlineDateTime / Template:InlineDateTime):
  *   data-dt-start       ISO-ish datetime (with or without offset)
  *   data-dt-start-tz    "server" or offset like "+8", "-5"
  *   data-dt-end          (optional)

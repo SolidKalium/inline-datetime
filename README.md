@@ -58,6 +58,7 @@ There are two ways to get the files onto a wiki:
   * Copy the JS and CSS gadget files into `MediaWiki:`
   * Copy the Lua module into `Module:`
   * Copy the template into `Template:`
+  * Optional: copy `Template:IDT` as a short alias that forwards to `Template:InlineDateTime`
 * XML import:
   * Build `dist/mediawiki-export.xml` with `python3 scripts/build_artifacts.py`
   * Import that XML file into the target wiki
@@ -66,11 +67,12 @@ There are two ways to get the files onto a wiki:
 This repository's export file includes:
 * `MediaWiki:Gadget-inline-datetime.js`
 * `MediaWiki:Gadget-inline-datetime.css`
-* `Module:DateTime`
-* `Template:Dt`
-* `Template:Dt/doc`
+* `Module:InlineDateTime`
+* `Template:InlineDateTime`
+* `Template:InlineDateTime/doc`
 
 `MediaWiki:Gadgets-definition` is not included in the export because it is usually site-specific.
+[`Template:IDT`](gadget/Template_IDT.wikitext) is also not included in the export bundle; add it manually only if you want the shorter alias.
 
 ### Styling
 The gadget emits semantic classes so it can inherit surrounding text styling while still allowing some customization.

@@ -1,9 +1,9 @@
--- Module:DateTime
+-- Module:InlineDateTime
 -- Parses datetime template input and emits structured HTML for client-side
 -- timezone conversion. JS enhances with tooltips and local time display.
 --
--- Usage from Template:Dt:
---   {{#invoke:DateTime|main}}
+-- Usage from Template:InlineDateTime:
+--   {{#invoke:InlineDateTime|main}}
 --
 -- Template parameters:
 --   |start=2026-03-12 06:00        (server time, no offset)
@@ -123,7 +123,7 @@ function p.main(frame)
     local endParsed = parseDatetime(endStr)
 
     if not startParsed and raw == '' then
-        return '<span class="dt-error">DateTime: invalid start parameter</span>'
+        return '<span class="dt-error">InlineDateTime: invalid start parameter</span>'
     end
 
     -- Build data attributes

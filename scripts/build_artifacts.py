@@ -30,18 +30,18 @@ EXPORT_PAGES = [
         "ns": 8,
     },
     {
-        "source": ROOT / "gadget" / "Module_DateTime.lua",
-        "title": "Module:DateTime",
+        "source": ROOT / "gadget" / "Module_InlineDateTime.lua",
+        "title": "Module:InlineDateTime",
         "ns": 828,
     },
     {
-        "source": ROOT / "gadget" / "Template_Dt.wikitext",
-        "title": "Template:Dt",
+        "source": ROOT / "gadget" / "Template_InlineDateTime.wikitext",
+        "title": "Template:InlineDateTime",
         "ns": 10,
     },
     {
-        "source": ROOT / "gadget" / "Template_Dt_doc.wikitext",
-        "title": "Template:Dt/doc",
+        "source": ROOT / "gadget" / "Template_InlineDateTime_doc.wikitext",
+        "title": "Template:InlineDateTime/doc",
         "ns": 10,
     },
 ]

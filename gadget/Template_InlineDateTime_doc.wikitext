@@ -55,4 +55,4 @@
 
 Without JavaScript, the template displays dates in a readable format with the timezone context (either the UTC offset or "server time"). Tooltips are not available without JavaScript.
 
-[[Category:DateTime templates]]
+[[Category:InlineDateTime templates]]

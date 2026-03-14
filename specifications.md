@@ -67,11 +67,11 @@ Time and timespan formatting is the same whether inline or in the tooltip.
   * Note: Intl provides short timezone descriptions like "GMT+1" instead of "BST" when the timezone isn't common in the browser's locale (e.g. "en-US" instead of "en-GB"). This is to prevent confusion from multiple timezones using the same abbreviation.
 
 ## Architecture
-* Lua module (Module:DateTime)
+* Lua module (Module:InlineDateTime)
   * parses input
   * generates fallback text
   * emits structured HTML with data attributes
-* Template (Template:Dt)
+* Template (Template:InlineDateTime)
   * thin #invoke wrapper
 * JS gadget
   * display logic
