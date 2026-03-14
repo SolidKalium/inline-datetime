@@ -1,0 +1,36 @@
+name: Build Artifacts
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Build artifacts
+        run: python3 scripts/build_artifacts.py
+
+      - name: Upload demo page
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-page
+          path: dist/test.html
+
+      - name: Upload MediaWiki export
+        uses: actions/upload-artifact@v4
+        with:
+          name: mediawiki-export
+          path: dist/mediawiki-export.xml

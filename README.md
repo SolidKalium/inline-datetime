@@ -6,9 +6,11 @@ This gadget will format times and timespans as inline text with a tooltip (acces
 
 TODO image of a tooltip
 TODO link to demo page
+TODO link to xml download
 
 ## Features
 [Full specifications](specifications.md)
+[Development notes](DEVELOPMENT.md)
 
 **Supported:**
 * Multiple servers with distinct time zones
@@ -26,14 +28,14 @@ TODO link to demo page
   * This could be used to provide a tooltip on patch notes where you want the displayed text to match the official description of the time.
 * Basic defaults to display when Javascript is disabled
 * Basic semantic HTML classes to enable custom css
-* Auto-deduplicating things like the year or day when it is the same for the whole timespan in the user's time zone.
+* Auto-deduplicating things like the year or day when it is the same for the whole timespan in the user's timezone.
 
 **Not supported:**
 * Languages other than English
 * Time formatting other than American
 * Events that occur at unrelated times on different servers
   * But: you can use the single server capability to list them separately in-line.
-* Live changes to the user's time zone after page load
+* Live changes to the user's timezone after page load
 * No user settings: keeping it simple and avoiding confusion
   * Can't display a specific server's info in-line
   * Can't hide a server's info in the tooltip
@@ -46,8 +48,7 @@ TODO link to demo page
 
 
 ## TODO
-* organize files. What's the normal way for a gadget?
-* usage documentation (specs, docs, visual test page)
+* align usage documentation (specs, wiki doc page, visual test page)
   * Need to support at least on-wiki and on-web
 * improve visual test page
   * Native js/no-js preview?
@@ -55,23 +56,61 @@ TODO link to demo page
   * Test case list?
   * Support select-your-own timezone instead of the browser's default?
   * Support enter-your-own call to lua? (may need wasm Lua...)
+* Link the export file for mediawiki to import
+  * Figure out what MediaWiki:Gadgets-definition could look like if auto-imported.
+  * How will MediaWiki handle "duplicate" pages?
 * audit code for readability and obviousness
-  * Maybe do a little work to make styling and other regions be better supported?
+  * Maybe do a little work to make styling and regional time formats be better supported?
   * What timezone formats are supported as inputs?
   * error visibility when given a bad (or likely bad) input?
   * rename the lua to inline-datetime? Or maybe use a different text that mentions the tooltip? inline-datetime-tooltip? That's kind of long..
 * Bugs
   * Tooltip supports click to keep it open. Stays open when clicking again. Is that expected? Maybe close on second click? And/or just make it being open be tap only? Currently tabbable. Is that a good idea?
+  * The server configs are hardcoded, but should live in json.
 * Undefined behavior (document the results)
   * What if someone puts it in a header, in italics text, etc?
   * How are we handling timezone abbreviation changes locally? e.g. DST starting/ending in the middle
   * Did we handle no-JS formatting? Update spec if so.
   * did the tooltip for raw text end up with three lines? Update spec.md if so.
   * What actually happens when the language isn't english? Does the i18n date give non-english month names?
+* Change all time zone to timezone, in-line to inline?
+* Decide on file names and project name
 
 ## Install and Configure
 
-TODO
+There are two ways to get the files onto a wiki:
+* Manual copy:
+  * Copy the JS and CSS gadget files into `MediaWiki:`
+  * Copy the Lua module into `Module:`
+  * Copy the template into `Template:`
+* XML import:
+  * Build `dist/mediawiki-export.xml` with `python3 scripts/build_artifacts.py`
+  * Import that XML file into the target wiki
+  * Update `MediaWiki:Gadgets-definition` or your wiki's gadget config to load the gadget JS and CSS pages
+
+This repository's export file includes:
+* `MediaWiki:Gadget-inline-datetime.js`
+* `MediaWiki:Gadget-inline-datetime.css`
+* `Module:DateTime`
+* `Template:Dt`
+* `Template:Dt/doc`
+
+`MediaWiki:Gadgets-definition` is not included in the export because it is usually site-specific.
+
+### Styling
+
+The gadget emits semantic classes so it can inherit surrounding text styling while still allowing some customization.
+
+Useful classes:
+* `.dt-inline`: the inline wrapper element
+* `.dt-tooltip`: the tooltip container
+* `.dt-tooltip-row`: a single server row in the tooltip
+* `.dt-tz` and `.dt-tt-tz`: timezone labels inline and in the tooltip
+* `.dt-ampm` and `.dt-tt-ampm`: AM/PM styling inline and in the tooltip
+
+Useful CSS variables:
+* `--dt-tooltip-bg`: tooltip background color
+* `--dt-tooltip-fg`: tooltip foreground color
 
 ## Q & A
 

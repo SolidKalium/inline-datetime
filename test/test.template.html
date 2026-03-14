@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DateTime Component Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 2em auto;
+            padding: 0 1em;
+            line-height: 1.6;
+            color: #222;
+            background: #fff;
+        }
+        h2 { margin-top: 2em; border-bottom: 1px solid #ccc; padding-bottom: 0.3em; }
+        h3 { margin-top: 1.5em; color: #555; }
+        .example { margin: 1em 0; padding: 1em; background: #f8f8f8; border-left: 3px solid #ccc; }
+        .example p { margin: 0.3em 0; }
+        code { background: #eee; padding: 0.1em 0.3em; font-size: 0.9em; border-radius: 2px; }
+        .note { color: #666; font-size: 0.9em; font-style: italic; }
+        .dark-demo { background: #1a1a2e; color: #e0e0e0; padding: 1em; border-radius: 4px; margin: 1em 0; }
+        .dark-demo .example { background: #252540; border-left-color: #555; }
+
+        /* BUILD:INLINE-DATETIME-CSS */
+    </style>
+</head>
+<body>
+
+<h1>DateTime Component</h1>
+<p class="note">
+    Your browser timezone: <strong id="tz-display"></strong><br>
+    Hover over dashed-underlined times for tooltip. On mobile, tap.
+</p>
+
+<h2>Server time (same wall-clock for all servers)</h2>
+
+<h3>Range, different dates</h3>
+<div class="example">
+    <p>Combat Drills for Tangtang is available from
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T12:00"
+              data-dt-start-tz="server"
+              data-dt-end="2026-03-29T12:00"
+              data-dt-end-tz="server">Mar 12, 12:00 – Mar 29, 12:00 (server time)</span>.
+    </p>
+    <p class="note"><code>{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}</code></p>
+    <p class="note">Inline should show "(server)" once at end. Tooltip shows your local time per server.</p>
+</div>
+
+<h3>Single point</h3>
+<div class="example">
+    <p>The Red Knight becomes available at
+        <span class="dt-inline"
+              data-dt-start="2026-03-29T12:00"
+              data-dt-start-tz="server">Mar 29, 12:00 (server time)</span>.
+    </p>
+</div>
+
+<h3>Non-zero minutes</h3>
+<div class="example">
+    <p>Event ends at
+        <span class="dt-inline"
+              data-dt-start="2026-03-29T11:59"
+              data-dt-start-tz="server">Mar 29, 11:59 (server time)</span>.
+    </p>
+</div>
+
+<h2>Absolute time (same real-world moment for all)</h2>
+
+<h3>Maintenance window (UTC+8)</h3>
+<div class="example">
+    <p>Scheduled maintenance:
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T06:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-12T12:00+08:00"
+              data-dt-end-tz="+8">Mar 12, 06:00 – 12:00 (UTC+8)</span>.
+    </p>
+    <p class="note">Inline shows your local time with your TZ once at end of range. Tooltip shows each server's wall-clock.</p>
+</div>
+
+<h3>Filtered to Asia</h3>
+<div class="example">
+    <p>Asia maintenance:
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T06:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-12T12:00+08:00"
+              data-dt-end-tz="+8"
+              data-dt-server="asia">Mar 12, 06:00 – 12:00 (UTC+8)</span>.
+    </p>
+</div>
+
+<h3>Filtered to Americas</h3>
+<div class="example">
+    <p>Americas maintenance:
+        <span class="dt-inline"
+              data-dt-start="2026-03-11T17:00-05:00"
+              data-dt-start-tz="-5"
+              data-dt-end="2026-03-11T23:00-05:00"
+              data-dt-end-tz="-5"
+              data-dt-server="americas">Mar 11, 17:00 – 23:00 (UTC-5)</span>.
+    </p>
+</div>
+
+<h2>Mixed: absolute start, server-relative end</h2>
+<div class="example">
+    <p>Event begins after maintenance, runs until server reset:
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T12:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-29T04:00"
+              data-dt-end-tz="server">Mar 12, 12:00 (UTC+8) – Mar 29, 04:00 (server)</span>.
+    </p>
+    <p class="note">Start gets your TZ (EDT), end gets "(server)" so both labels are shown.</p>
+</div>
+
+<h2>Previous year &amp; cross-year</h2>
+
+<h3>Previous year (beta test, 2025)</h3>
+<div class="example">
+    <p>Second beta test:
+        <span class="dt-inline"
+              data-dt-start="2025-11-27T22:00-05:00"
+              data-dt-start-tz="-5"
+              data-dt-end="2025-12-29T01:00-05:00"
+              data-dt-end-tz="-5">Nov 27, 2025, 22:00 – Dec 29, 2025, 01:00 (UTC-5)</span>.
+    </p>
+</div>
+
+<h3>Cross-year range (Dec 2025 - Jan 2026)</h3>
+<div class="example">
+    <p>Holiday event:
+        <span class="dt-inline"
+              data-dt-start="2025-12-20T12:00"
+              data-dt-start-tz="server"
+              data-dt-end="2026-01-10T04:00"
+              data-dt-end-tz="server">Dec 20, 2025, 12:00 – Jan 10, 2026, 04:00 (server)</span>.
+    </p>
+    <p class="note">Year shown on both because they differ.</p>
+</div>
+
+<h2>Edge cases</h2>
+
+<h3>Same-day in source TZ (may cross midnight in your TZ)</h3>
+<div class="example">
+    <p>Flash sale:
+        <span class="dt-inline"
+              data-dt-start="2026-03-15T10:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-15T14:00+08:00"
+              data-dt-end-tz="+8">Mar 15, 10:00 – 14:00 (UTC+8)</span>.
+    </p>
+</div>
+
+<h3>Crosses midnight in source TZ</h3>
+<div class="example">
+    <p>Late-night event:
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T22:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-13T06:00+08:00"
+              data-dt-end-tz="+8">Mar 12, 22:00 – Mar 13, 06:00 (UTC+8)</span>.
+    </p>
+</div>
+
+<h2>Dark theme</h2>
+<div class="dark-demo" style="--dt-tooltip-bg: #3a3a4e; --dt-tooltip-fg: #e8e8e8;">
+    <div class="example">
+        <p>Maintenance:
+            <span class="dt-inline"
+                  data-dt-start="2026-03-12T06:00+08:00"
+                  data-dt-start-tz="+8"
+                  data-dt-end="2026-03-12T12:00+08:00"
+                  data-dt-end-tz="+8">Mar 12, 06:00 – 12:00 (UTC+8)</span>.
+        </p>
+    </div>
+    <div class="example">
+        <p>Server time:
+            <span class="dt-inline"
+                  data-dt-start="2026-03-12T12:00"
+                  data-dt-start-tz="server"
+                  data-dt-end="2026-03-29T12:00"
+                  data-dt-end-tz="server">Mar 12 – Mar 29, 12:00 (server)</span>.
+        </p>
+    </div>
+</div>
+
+<h2>No-JS reference</h2>
+<div class="example">
+    <p class="note">Plain span, no <code>dt-inline</code> class. Disable JS to see all above degrade similarly.</p>
+    <p>Maintenance:
+        <span>Mar 12, 06:00 – 12:00 (UTC+8)</span>.
+    </p>
+</div>
+
+<script>
+/* BUILD:INLINE-DATETIME-JS */
+</script>
+<script>
+    document.getElementById('tz-display').textContent = (function() {
+        var d = new Date();
+        var off = -d.getTimezoneOffset();
+        var sign = off >= 0 ? '+' : '-';
+        var abs = Math.abs(off);
+        var h = Math.floor(abs / 60);
+        var m = abs % 60;
+        try {
+            var parts = new Intl.DateTimeFormat('en-US', { timeZoneName: 'long' })
+                .formatToParts(d);
+            for (var i = 0; i < parts.length; i++) {
+                if (parts[i].type === 'timeZoneName') {
+                    return parts[i].value + ' (UTC' + sign + h + (m ? ':' + (m < 10 ? '0' : '') + m : '') + ')';
+                }
+            }
+        } catch (e) {}
+        return 'UTC' + sign + h;
+    })();
+</script>
+</body>
+</html>

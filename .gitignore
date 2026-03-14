@@ -1,0 +1,21 @@
+dist/
+
+# OS files
+.DS_Store
+
+# Editor directories
+.idea/
+.vscode/
+
+# Python cache and virtualenvs
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local environment files
+.env
+.env.*
