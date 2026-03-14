@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 from datetime import datetime, timezone
 from pathlib import Path
 from xml.sax.saxutils import escape
@@ -11,8 +12,11 @@ from xml.sax.saxutils import escape
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_DIST_DIR = ROOT / "dist"
 TEST_TEMPLATE = ROOT / "test" / "test.template.html"
+TEST_CASES = ROOT / "test" / "test-cases.json"
 TEST_CSS_MARKER = "/* BUILD:INLINE-DATETIME-CSS */"
 TEST_JS_MARKER = "/* BUILD:INLINE-DATETIME-JS */"
+TEST_CASES_INTERACTIVE_MARKER = "<!-- BUILD:TEST-CASES-INTERACTIVE -->"
+TEST_CASES_FALLBACK_MARKER = "<!-- BUILD:TEST-CASES-FALLBACK -->"
 
 EXPORT_PAGES = [
     {
@@ -56,13 +60,94 @@ def indent_block(text: str, prefix: str) -> str:
     return "\n".join(prefix + line if line else "" for line in text.splitlines())
 
 
+def html_escape(text: str) -> str:
+    return escape(text, {'"': "&quot;"})
+
+
+def render_case(case: dict, prefix: str, interactive: bool) -> str:
+    lines = []
+
+    title = case.get("title")
+    if title:
+        lines.append(f"{prefix}<h3>{html_escape(title)}</h3>")
+
+    lines.append(f"{prefix}<div class=\"example\">")
+
+    note = case.get("note")
+    if note:
+        lines.append(f"{prefix}    <p class=\"note\">{html_escape(note)}</p>")
+
+    description_before = case.get("description_before", "")
+    description_after = case.get("description_after", ".")
+    fallback = html_escape(case["fallback"])
+
+    if interactive:
+        attrs = " ".join(
+            f'{name}="{html_escape(value)}"'
+            for name, value in case.get("attrs", {}).items()
+        )
+        span_open = f"<span class=\"dt-inline\" {attrs}>"
+        lines.append(
+            f"{prefix}    <p>{html_escape(description_before)}"
+            f"{' ' if description_before else ''}{span_open}{fallback}</span>{html_escape(description_after)}</p>"
+        )
+    else:
+        lines.append(
+            f"{prefix}    <p>{html_escape(description_before)}"
+            f"{' ' if description_before else ''}<span>{fallback}</span>{html_escape(description_after)}</p>"
+        )
+
+    code = case.get("code")
+    if code:
+        lines.append(f"{prefix}    <p class=\"note\"><code>{html_escape(code)}</code></p>")
+
+    lines.append(f"{prefix}</div>")
+    return "\n".join(lines)
+
+
+def render_test_cases(interactive: bool) -> str:
+    data = json.loads(read_text(TEST_CASES))
+    lines = []
+
+    for section in data["sections"]:
+        lines.append(f"<h2>{html_escape(section['title'])}</h2>")
+        wrapper_class = section.get("wrapper_class")
+        wrapper_style = section.get("wrapper_style")
+        prefix = ""
+
+        if wrapper_class:
+            attrs = [f'class="{html_escape(wrapper_class)}"']
+            if wrapper_style:
+                attrs.append(f'style="{html_escape(wrapper_style)}"')
+            lines.append(f"<div {' '.join(attrs)}>")
+            prefix = "    "
+
+        for case in section["cases"]:
+            lines.append(render_case(case, prefix, interactive))
+
+        if wrapper_class:
+            lines.append("</div>")
+
+        lines.append("")
+
+    return "\n".join(lines).rstrip()
+
+
 def build_test_page(dist_dir: Path) -> Path:
     template = read_text(TEST_TEMPLATE)
     css = indent_block(read_text(ROOT / "gadget" / "inline-datetime.css").rstrip(), "        ")
     js = indent_block(read_text(ROOT / "gadget" / "inline-datetime.js").rstrip(), "    ")
+    interactive_cases = render_test_cases(interactive=True)
+    fallback_cases = render_test_cases(interactive=False)
     test_output = dist_dir / "test.html"
 
-    output = template.replace(TEST_CSS_MARKER, css).replace(TEST_JS_MARKER, js)
+    output = (
+        template
+        .replace(TEST_CSS_MARKER, css)
+        .replace(TEST_JS_MARKER, js)
+        .replace(TEST_CASES_INTERACTIVE_MARKER, interactive_cases)
+        .replace(TEST_CASES_FALLBACK_MARKER, fallback_cases)
+    )
     write_text(test_output, output + "\n")
     return test_output
 

@@ -8,6 +8,7 @@ TODO image of a tooltip
 TODO link to demo page
 TODO link to xml download
 
+
 ## Features
 [Full specifications](specifications.md)
 [Development notes](DEVELOPMENT.md)
@@ -52,7 +53,6 @@ TODO link to xml download
   * Need to support at least on-wiki and on-web
 * improve visual test page
   * Native js/no-js preview?
-  * Github auto-build?
   * Test case list?
   * Support select-your-own timezone instead of the browser's default?
   * Support enter-your-own call to lua? (may need wasm Lua...)
@@ -76,8 +76,8 @@ TODO link to xml download
 * Change all time zone to timezone, in-line to inline?
 * Decide on file names and project name
 
-## Install and Configure
 
+## Install and Configure
 There are two ways to get the files onto a wiki:
 * Manual copy:
   * Copy the JS and CSS gadget files into `MediaWiki:`
@@ -98,7 +98,6 @@ This repository's export file includes:
 `MediaWiki:Gadgets-definition` is not included in the export because it is usually site-specific.
 
 ### Styling
-
 The gadget emits semantic classes so it can inherit surrounding text styling while still allowing some customization.
 
 Useful classes:
@@ -112,8 +111,8 @@ Useful CSS variables:
 * `--dt-tooltip-bg`: tooltip background color
 * `--dt-tooltip-fg`: tooltip foreground color
 
-## Q & A
 
+## Q & A
 * What alternatives were considered?
   * [**TZclock** gadget](https://dev.fandom.com/wiki/TZclock): This displays the current time in a specified time zone. It can't display a specific moment in time in the user's timezone. It uses its own implementation of calculating time zones instead of using built in capabilities in Lua or Javascript.
   * [**clock**](https://endfield.wiki.gg/wiki/MediaWiki:Gadgets/clock/main.css) and [**clockScripts**](https://endfield.wiki.gg/wiki/MediaWiki:Gadgets/clockScripts/main.js) gadgets: This shows the current server times and countdowns until resets. It doesn't support inline display or showing specific times or timespans.

@@ -1,0 +1,152 @@
+{
+  "sections": [
+    {
+      "title": "Server time (same wall-clock for all servers)",
+      "cases": [
+        {
+          "title": "Range, different dates",
+          "description_before": "Combat Drills for Tangtang is available from",
+          "fallback": "Mar 12, 12:00 – Mar 29, 12:00 (server time)",
+          "attrs": {
+            "data-dt-start": "2026-03-12T12:00",
+            "data-dt-start-tz": "server",
+            "data-dt-end": "2026-03-29T12:00",
+            "data-dt-end-tz": "server"
+          },
+          "code": "{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}",
+          "note": "Inline should show \"(server)\" once at end. Tooltip shows your local time per server."
+        },
+        {
+          "title": "Single point",
+          "description_before": "The Red Knight becomes available at",
+          "fallback": "Mar 29, 12:00 (server time)",
+          "attrs": {
+            "data-dt-start": "2026-03-29T12:00",
+            "data-dt-start-tz": "server"
+          }
+        },
+        {
+          "title": "Non-zero minutes",
+          "description_before": "Event ends at",
+          "fallback": "Mar 29, 11:59 (server time)",
+          "attrs": {
+            "data-dt-start": "2026-03-29T11:59",
+            "data-dt-start-tz": "server"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Absolute time (same real-world moment for all)",
+      "cases": [
+        {
+          "title": "Maintenance window (UTC+8)",
+          "description_before": "Scheduled maintenance:",
+          "fallback": "Mar 12, 06:00 – 12:00 (UTC+8)",
+          "attrs": {
+            "data-dt-start": "2026-03-12T06:00+08:00",
+            "data-dt-start-tz": "+8",
+            "data-dt-end": "2026-03-12T12:00+08:00",
+            "data-dt-end-tz": "+8"
+          },
+          "note": "Inline shows your local time with your TZ once at end of range. Tooltip shows each server's wall-clock."
+        },
+        {
+          "title": "Filtered to Asia",
+          "description_before": "Asia maintenance:",
+          "fallback": "Mar 12, 06:00 – 12:00 (UTC+8)",
+          "attrs": {
+            "data-dt-start": "2026-03-12T06:00+08:00",
+            "data-dt-start-tz": "+8",
+            "data-dt-end": "2026-03-12T12:00+08:00",
+            "data-dt-end-tz": "+8",
+            "data-dt-server": "asia"
+          }
+        },
+        {
+          "title": "Filtered to Americas",
+          "description_before": "Americas maintenance:",
+          "fallback": "Mar 11, 17:00 – 23:00 (UTC-5)",
+          "attrs": {
+            "data-dt-start": "2026-03-11T17:00-05:00",
+            "data-dt-start-tz": "-5",
+            "data-dt-end": "2026-03-11T23:00-05:00",
+            "data-dt-end-tz": "-5",
+            "data-dt-server": "americas"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Mixed: absolute start, server-relative end",
+      "cases": [
+        {
+          "description_before": "Event begins after maintenance, runs until server reset:",
+          "fallback": "Mar 12, 12:00 (UTC+8) – Mar 29, 04:00 (server)",
+          "attrs": {
+            "data-dt-start": "2026-03-12T12:00+08:00",
+            "data-dt-start-tz": "+8",
+            "data-dt-end": "2026-03-29T04:00",
+            "data-dt-end-tz": "server"
+          },
+          "note": "Start gets your TZ (EDT), end gets \"(server)\" so both labels are shown."
+        }
+      ]
+    },
+    {
+      "title": "Previous year and cross-year",
+      "cases": [
+        {
+          "title": "Previous year (beta test, 2025)",
+          "description_before": "Second beta test:",
+          "fallback": "Nov 27, 2025, 22:00 – Dec 29, 2025, 01:00 (UTC-5)",
+          "attrs": {
+            "data-dt-start": "2025-11-27T22:00-05:00",
+            "data-dt-start-tz": "-5",
+            "data-dt-end": "2025-12-29T01:00-05:00",
+            "data-dt-end-tz": "-5"
+          }
+        },
+        {
+          "title": "Cross-year range (Dec 2025 - Jan 2026)",
+          "description_before": "Holiday event:",
+          "fallback": "Dec 20, 2025, 12:00 – Jan 10, 2026, 04:00 (server)",
+          "attrs": {
+            "data-dt-start": "2025-12-20T12:00",
+            "data-dt-start-tz": "server",
+            "data-dt-end": "2026-01-10T04:00",
+            "data-dt-end-tz": "server"
+          },
+          "note": "Year shown on both because they differ."
+        }
+      ]
+    },
+    {
+      "title": "Edge cases",
+      "cases": [
+        {
+          "title": "Same-day in source TZ (may cross midnight in your TZ)",
+          "description_before": "Flash sale:",
+          "fallback": "Mar 15, 10:00 – 14:00 (UTC+8)",
+          "attrs": {
+            "data-dt-start": "2026-03-15T10:00+08:00",
+            "data-dt-start-tz": "+8",
+            "data-dt-end": "2026-03-15T14:00+08:00",
+            "data-dt-end-tz": "+8"
+          }
+        },
+        {
+          "title": "Crosses midnight in source TZ",
+          "description_before": "Late-night event:",
+          "fallback": "Mar 12, 22:00 – Mar 13, 06:00 (UTC+8)",
+          "attrs": {
+            "data-dt-start": "2026-03-12T22:00+08:00",
+            "data-dt-start-tz": "+8",
+            "data-dt-end": "2026-03-13T06:00+08:00",
+            "data-dt-end-tz": "+8"
+          }
+        }
+      ]
+    }
+  ]
+}
