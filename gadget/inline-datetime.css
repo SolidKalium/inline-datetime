@@ -1,0 +1,107 @@
+/*
+ * DateTime inline converter styles
+ *
+ * Inline classes (dt-*):     styled by JS in the main text
+ * Tooltip classes (dt-tt-*): styled by JS inside tooltips
+ *
+ * Tooltip colors via CSS custom properties:
+ *   --dt-tooltip-bg (default #2a2a2e)
+ *   --dt-tooltip-fg (default #e0e0e0)
+ */
+
+/* === Inline element: affordance after JS processes === */
+.dt-inline.dt-handled {
+    border-bottom: 1px dashed currentColor;
+    cursor: help;
+    display: inline;
+    position: relative;
+}
+
+/* === Inline text styling === */
+
+.dt-inline .dt-ampm {
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-size: 0.9em;
+}
+
+.dt-inline .dt-tz {
+    opacity: 0.65;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+/* === Tooltip container === */
+.dt-inline .dt-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.4em 0.6em;
+    font-size: 0.875em;
+    line-height: 1.4;
+    white-space: nowrap;
+    z-index: 100;
+    background-color: var(--dt-tooltip-bg, #2a2a2e);
+    color: var(--dt-tooltip-fg, #e0e0e0);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 6px;
+    pointer-events: none;
+}
+
+/* Tooltip arrow */
+.dt-inline .dt-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--dt-tooltip-bg, #2a2a2e);
+}
+
+/* Show on hover and focus */
+.dt-inline.dt-has-tooltip:hover .dt-tooltip,
+.dt-inline.dt-has-tooltip:focus .dt-tooltip,
+.dt-inline.dt-has-tooltip:focus-within .dt-tooltip {
+    display: block;
+}
+
+/* === Tooltip rows === */
+.dt-tooltip .dt-tooltip-row {
+    display: block;
+}
+
+.dt-tooltip .dt-tooltip-row + .dt-tooltip-row {
+    margin-top: 0.15em;
+}
+
+.dt-tooltip .dt-tooltip-label {
+    font-weight: 600;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+/* === Tooltip text styling === */
+
+.dt-tooltip .dt-tt-ampm {
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-size: 0.9em;
+}
+
+.dt-tooltip .dt-tt-tz {
+    opacity: 0.65;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+/* === Touch/mobile === */
+@media (hover: none) {
+    .dt-inline.dt-has-tooltip {
+        border-bottom-style: dotted;
+        outline: none;
+    }
+}

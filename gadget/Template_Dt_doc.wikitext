@@ -1,0 +1,58 @@
+== Usage ==
+
+<code><nowiki>{{dt}}</nowiki></code> displays an inline datetime or date range with automatic timezone conversion for the reader. Times are shown with a tooltip providing conversions to the reader's local time and/or server times.
+
+=== Parameters ===
+
+{| class="wikitable"
+|-
+! Parameter !! Required !! Description
+|-
+| <code>start</code> or <code>1</code> || Yes (unless <code>raw</code> is set) || Start datetime in <code>YYYY-MM-DD HH:MM</code> format. Append a UTC offset (<code>+8</code>, <code>-5</code>, <code>+05:30</code>) for absolute times. Omit the offset for server time.
+|-
+| <code>end</code> or <code>2</code> || No || End datetime, same format as start. If the date matches start, only the time portion is shown in the fallback display.
+|-
+| <code>server</code> || No || Restrict tooltip to a specific server: <code>asia</code> or <code>americas</code>. Omit to show both.
+|-
+| <code>raw</code> || No || Raw display text override. The original text is shown as-is; <code>start</code>/<code>end</code> are still used for tooltip calculations.
+|}
+
+=== Timezone behavior ===
+
+* '''No offset''' (<code>start=2026-03-12 12:00</code>): Treated as server time. The same wall-clock time applies to each server independently. Tooltip shows the reader's local time for each server.
+* '''With offset''' (<code>start=2026-03-12 06:00 +8</code>): Treated as an absolute moment. Inline display shows the reader's local time (with their timezone abbreviation). Tooltip shows each server's local time.
+* Start and end can have different timezone types (e.g., absolute start, server-relative end).
+
+=== Server definitions ===
+
+{| class="wikitable"
+|-
+! Server !! UTC Offset !! Notes
+|-
+| Asia || UTC+8 || Fixed offset, no DST
+|-
+| Americas / Europe || UTC-5 || Fixed offset, no DST (EST year-round)
+|}
+
+=== Examples ===
+
+'''Server time range (most common):'''
+<pre>{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}</pre>
+
+'''Absolute time (maintenance window):'''
+<pre>{{dt|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8}}</pre>
+
+'''Single point in time:'''
+<pre>{{dt|start=2026-03-12 12:00}}</pre>
+
+'''With server filter:'''
+<pre>{{dt|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8|server=asia}}</pre>
+
+'''With raw text (for dev notes):'''
+<pre>{{dt|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8|raw=Mar. 12, 2026 at 06:00 - Mar. 12, 2026 at 12:00 (UTC+8)}}</pre>
+
+=== No-JavaScript fallback ===
+
+Without JavaScript, the template displays dates in a readable format with the timezone context (either the UTC offset or "server time"). Tooltips are not available without JavaScript.
+
+[[Category:DateTime templates]]

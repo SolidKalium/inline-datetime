@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DateTime Component Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 2em auto;
+            padding: 0 1em;
+            line-height: 1.6;
+            color: #222;
+            background: #fff;
+        }
+        h2 { margin-top: 2em; border-bottom: 1px solid #ccc; padding-bottom: 0.3em; }
+        h3 { margin-top: 1.5em; color: #555; }
+        .example { margin: 1em 0; padding: 1em; background: #f8f8f8; border-left: 3px solid #ccc; }
+        .example p { margin: 0.3em 0; }
+        code { background: #eee; padding: 0.1em 0.3em; font-size: 0.9em; border-radius: 2px; }
+        .note { color: #666; font-size: 0.9em; font-style: italic; }
+        .dark-demo { background: #1a1a2e; color: #e0e0e0; padding: 1em; border-radius: 4px; margin: 1em 0; }
+        .dark-demo .example { background: #252540; border-left-color: #555; }
+/*
+ * DateTime inline converter styles
+ *
+ * Inline classes (dt-*):     styled by JS in the main text
+ * Tooltip classes (dt-tt-*): styled by JS inside tooltips
+ *
+ * Tooltip colors via CSS custom properties:
+ *   --dt-tooltip-bg (default #2a2a2e)
+ *   --dt-tooltip-fg (default #e0e0e0)
+ */
+
+/* === Inline element: affordance after JS processes === */
+.dt-inline.dt-handled {
+    border-bottom: 1px dashed currentColor;
+    cursor: help;
+    display: inline;
+    position: relative;
+}
+
+/* === Inline text styling === */
+
+.dt-inline .dt-ampm {
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-size: 0.9em;
+}
+
+.dt-inline .dt-tz {
+    opacity: 0.65;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+/* === Tooltip container === */
+.dt-inline .dt-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.4em 0.6em;
+    font-size: 0.875em;
+    line-height: 1.4;
+    white-space: nowrap;
+    z-index: 100;
+    background-color: var(--dt-tooltip-bg, #2a2a2e);
+    color: var(--dt-tooltip-fg, #e0e0e0);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    margin-bottom: 6px;
+    pointer-events: none;
+}
+
+/* Tooltip arrow */
+.dt-inline .dt-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--dt-tooltip-bg, #2a2a2e);
+}
+
+/* Show on hover and focus */
+.dt-inline.dt-has-tooltip:hover .dt-tooltip,
+.dt-inline.dt-has-tooltip:focus .dt-tooltip,
+.dt-inline.dt-has-tooltip:focus-within .dt-tooltip {
+    display: block;
+}
+
+/* === Tooltip rows === */
+.dt-tooltip .dt-tooltip-row {
+    display: block;
+}
+
+.dt-tooltip .dt-tooltip-row + .dt-tooltip-row {
+    margin-top: 0.15em;
+}
+
+.dt-tooltip .dt-tooltip-label {
+    font-weight: 600;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+/* === Tooltip text styling === */
+
+.dt-tooltip .dt-tt-ampm {
+    font-variant: small-caps;
+    text-transform: lowercase;
+    font-size: 0.9em;
+}
+
+.dt-tooltip .dt-tt-tz {
+    opacity: 0.65;
+    font-size: 0.9em;
+    white-space: nowrap;
+}
+
+/* === Touch/mobile === */
+@media (hover: none) {
+    .dt-inline.dt-has-tooltip {
+        border-bottom-style: dotted;
+        outline: none;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+<h1>DateTime Component</h1>
+<p class="note">
+    Your browser timezone: <strong id="tz-display"></strong><br>
+    Hover over dashed-underlined times for tooltip. On mobile, tap.
+</p>
+
+<h2>Server time (same wall-clock for all servers)</h2>
+
+<h3>Range, different dates</h3>
+<div class="example">
+    <p>Combat Drills for Tangtang is available from
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T12:00"
+              data-dt-start-tz="server"
+              data-dt-end="2026-03-29T12:00"
+              data-dt-end-tz="server">Mar 12, 12:00 – Mar 29, 12:00 (server time)</span>.
+    </p>
+    <p class="note"><code>{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}</code></p>
+    <p class="note">Inline should show "(server)" once at end. Tooltip shows your local time per server.</p>
+</div>
+
+<h3>Single point</h3>
+<div class="example">
+    <p>The Red Knight becomes available at
+        <span class="dt-inline"
+              data-dt-start="2026-03-29T12:00"
+              data-dt-start-tz="server">Mar 29, 12:00 (server time)</span>.
+    </p>
+</div>
+
+<h3>Non-zero minutes</h3>
+<div class="example">
+    <p>Event ends at
+        <span class="dt-inline"
+              data-dt-start="2026-03-29T11:59"
+              data-dt-start-tz="server">Mar 29, 11:59 (server time)</span>.
+    </p>
+</div>
+
+<h2>Absolute time (same real-world moment for all)</h2>
+
+<h3>Maintenance window (UTC+8)</h3>
+<div class="example">
+    <p>Scheduled maintenance:
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T06:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-12T12:00+08:00"
+              data-dt-end-tz="+8">Mar 12, 06:00 – 12:00 (UTC+8)</span>.
+    </p>
+    <p class="note">Inline shows your local time with your TZ once at end of range. Tooltip shows each server's wall-clock.</p>
+</div>
+
+<h3>Filtered to Asia</h3>
+<div class="example">
+    <p>Asia maintenance:
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T06:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-12T12:00+08:00"
+              data-dt-end-tz="+8"
+              data-dt-server="asia">Mar 12, 06:00 – 12:00 (UTC+8)</span>.
+    </p>
+</div>
+
+<h3>Filtered to Americas</h3>
+<div class="example">
+    <p>Americas maintenance:
+        <span class="dt-inline"
+              data-dt-start="2026-03-11T17:00-05:00"
+              data-dt-start-tz="-5"
+              data-dt-end="2026-03-11T23:00-05:00"
+              data-dt-end-tz="-5"
+              data-dt-server="americas">Mar 11, 17:00 – 23:00 (UTC-5)</span>.
+    </p>
+</div>
+
+<h2>Mixed: absolute start, server-relative end</h2>
+<div class="example">
+    <p>Event begins after maintenance, runs until server reset:
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T12:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-29T04:00"
+              data-dt-end-tz="server">Mar 12, 12:00 (UTC+8) – Mar 29, 04:00 (server)</span>.
+    </p>
+    <p class="note">Start gets your TZ (EDT), end gets "(server)" — different labels so both shown.</p>
+</div>
+
+<h2>Previous year &amp; cross-year</h2>
+
+<h3>Previous year (beta test, 2025)</h3>
+<div class="example">
+    <p>Second beta test:
+        <span class="dt-inline"
+              data-dt-start="2025-11-27T22:00-05:00"
+              data-dt-start-tz="-5"
+              data-dt-end="2025-12-29T01:00-05:00"
+              data-dt-end-tz="-5">Nov 27, 2025, 22:00 – Dec 29, 2025, 01:00 (UTC-5)</span>.
+    </p>
+</div>
+
+<h3>Cross-year range (Dec 2025 – Jan 2026)</h3>
+<div class="example">
+    <p>Holiday event:
+        <span class="dt-inline"
+              data-dt-start="2025-12-20T12:00"
+              data-dt-start-tz="server"
+              data-dt-end="2026-01-10T04:00"
+              data-dt-end-tz="server">Dec 20, 2025, 12:00 – Jan 10, 2026, 04:00 (server)</span>.
+    </p>
+    <p class="note">Year shown on both because they differ.</p>
+</div>
+
+<h2>Edge cases</h2>
+
+<h3>Same-day in source TZ (may cross midnight in your TZ)</h3>
+<div class="example">
+    <p>Flash sale:
+        <span class="dt-inline"
+              data-dt-start="2026-03-15T10:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-15T14:00+08:00"
+              data-dt-end-tz="+8">Mar 15, 10:00 – 14:00 (UTC+8)</span>.
+    </p>
+</div>
+
+<h3>Crosses midnight in source TZ</h3>
+<div class="example">
+    <p>Late-night event:
+        <span class="dt-inline"
+              data-dt-start="2026-03-12T22:00+08:00"
+              data-dt-start-tz="+8"
+              data-dt-end="2026-03-13T06:00+08:00"
+              data-dt-end-tz="+8">Mar 12, 22:00 – Mar 13, 06:00 (UTC+8)</span>.
+    </p>
+</div>
+
+<h2>Dark theme</h2>
+<div class="dark-demo" style="--dt-tooltip-bg: #3a3a4e; --dt-tooltip-fg: #e8e8e8;">
+    <div class="example">
+        <p>Maintenance:
+            <span class="dt-inline"
+                  data-dt-start="2026-03-12T06:00+08:00"
+                  data-dt-start-tz="+8"
+                  data-dt-end="2026-03-12T12:00+08:00"
+                  data-dt-end-tz="+8">Mar 12, 06:00 – 12:00 (UTC+8)</span>.
+        </p>
+    </div>
+    <div class="example">
+        <p>Server time:
+            <span class="dt-inline"
+                  data-dt-start="2026-03-12T12:00"
+                  data-dt-start-tz="server"
+                  data-dt-end="2026-03-29T12:00"
+                  data-dt-end-tz="server">Mar 12 – Mar 29, 12:00 (server)</span>.
+        </p>
+    </div>
+</div>
+
+<h2>No-JS reference</h2>
+<div class="example">
+    <p class="note">Plain span, no <code>dt-inline</code> class. Disable JS to see all above degrade similarly.</p>
+    <p>Maintenance:
+        <span>Mar 12, 06:00 – 12:00 (UTC+8)</span>.
+    </p>
+</div>
+
+<script>
+/**
+ * DateTime inline converter
+ *
+ * Data attributes (emitted by Module:DateTime / Template:Dt):
+ *   data-dt-start       ISO-ish datetime (with or without offset)
+ *   data-dt-start-tz    "server" or offset like "+8", "-5"
+ *   data-dt-end          (optional)
+ *   data-dt-end-tz       (optional)
+ *   data-dt-server       (optional) "asia" or "americas" to filter tooltip
+ *   data-dt-raw          (optional) if present, don't overwrite inline text
+ *
+ * Server definitions (fixed offsets, no DST):
+ *   Asia:              UTC+8
+ *   Americas / Europe: UTC-5
+ */
+;(function () {
+    'use strict';
+
+    var SERVERS = {
+        asia:     { label: 'Asia',      offsetMin: 8 * 60 },
+        americas: { label: 'Americas',  offsetMin: -5 * 60 }
+    };
+
+    var HANDLED_CLASS = 'dt-handled';
+    var SERVER_LABEL = '(server)'; // inline label for server-relative times
+
+    // --- Utility functions ---
+
+    function parseOffsetMinutes(s) {
+        if (!s || s === 'server') return NaN;
+        var m = s.match(/^([+-])(\d{1,2}):?(\d{2})?$/);
+        if (!m) return NaN;
+        var sign = m[1] === '-' ? -1 : 1;
+        var hours = parseInt(m[2], 10);
+        var mins = m[3] ? parseInt(m[3], 10) : 0;
+        return sign * (hours * 60 + mins);
+    }
+
+    function parseToUTCms(isoStr, tzStr) {
+        if (!isoStr) return null;
+        if (/[+-]\d{2}:\d{2}$/.test(isoStr)) {
+            return new Date(isoStr).getTime();
+        }
+        var offMin = parseOffsetMinutes(tzStr);
+        if (!isNaN(offMin)) {
+            return new Date(isoStr + 'Z').getTime() - offMin * 60000;
+        }
+        return new Date(isoStr + 'Z').getTime();
+    }
+
+    function formatInOffset(utcMs, offsetMin, forceYear) {
+        var d = new Date(utcMs + offsetMin * 60000);
+        var months = [
+            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+        ];
+        var month = months[d.getUTCMonth()];
+        var day = d.getUTCDate();
+        var year = d.getUTCFullYear();
+        var h = d.getUTCHours();
+        var m = d.getUTCMinutes();
+        var ampm = h >= 12 ? 'PM' : 'AM';
+        var h12 = h % 12 || 12;
+        var timeCore = h12 + ':' + (m < 10 ? '0' : '') + m;
+
+        var currentYear = new Date().getFullYear();
+        var showYear = forceYear || (year !== currentYear);
+        var dateStr = month + ' ' + day;
+        if (showYear) {
+            dateStr += ', ' + year;
+        }
+
+        return {
+            date: dateStr,
+            timeCore: timeCore,
+            ampm: ampm,
+            year: year,
+            monthIdx: d.getUTCMonth(),
+            day: day,
+            full: dateStr + ', ' + timeCore + ' ' + ampm
+        };
+    }
+
+    function needForceYear(startUtcMs, startOff, endUtcMs, endOff) {
+        if (endUtcMs === null) return false;
+        var sy = new Date(startUtcMs + startOff * 60000).getUTCFullYear();
+        var ey = new Date(endUtcMs + endOff * 60000).getUTCFullYear();
+        return sy !== ey;
+    }
+
+    function getUserTZ() {
+        var now = new Date();
+        var offsetMin = -now.getTimezoneOffset();
+        var abbr = '';
+        try {
+            var parts = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' })
+                .formatToParts(now);
+            for (var i = 0; i < parts.length; i++) {
+                if (parts[i].type === 'timeZoneName') {
+                    abbr = parts[i].value;
+                    break;
+                }
+            }
+        } catch (e) {
+            var sign = offsetMin >= 0 ? '+' : '-';
+            var absOff = Math.abs(offsetMin);
+            abbr = 'UTC' + sign + Math.floor(absOff / 60);
+            if (absOff % 60) abbr += ':' + (absOff % 60 < 10 ? '0' : '') + (absOff % 60);
+        }
+        return { offsetMin: offsetMin, abbr: abbr };
+    }
+
+    function formatOffset(offsetMin) {
+        var sign = offsetMin >= 0 ? '+' : '-';
+        var abs = Math.abs(offsetMin);
+        var h = Math.floor(abs / 60);
+        var m = abs % 60;
+        var s = 'UTC' + sign + h;
+        if (m) s += ':' + (m < 10 ? '0' : '') + m;
+        return s;
+    }
+
+    function sameDay(f1, f2) {
+        return f1.year === f2.year && f1.monthIdx === f2.monthIdx && f1.day === f2.day;
+    }
+
+    /**
+     * Get the inline TZ label for an endpoint.
+     * Server time: "(server)"
+     * Absolute: user's TZ abbr like "EDT"
+     */
+    function inlineTzLabel(tzStr, userTZ) {
+        return (tzStr === 'server') ? SERVER_LABEL : userTZ.abbr;
+    }
+
+    // --- DOM building helpers ---
+
+    function buildStyledTime(fmt, prefix) {
+        var frag = document.createDocumentFragment();
+        frag.appendChild(document.createTextNode(fmt.timeCore + '\u00A0'));
+        var ampmSpan = document.createElement('span');
+        ampmSpan.className = prefix + 'ampm';
+        ampmSpan.textContent = fmt.ampm;
+        frag.appendChild(ampmSpan);
+        return frag;
+    }
+
+    function buildTzNode(tzAbbr, prefix) {
+        var frag = document.createDocumentFragment();
+        frag.appendChild(document.createTextNode('\u00A0'));
+        var tzSpan = document.createElement('span');
+        tzSpan.className = prefix + 'tz';
+        tzSpan.textContent = tzAbbr;
+        frag.appendChild(tzSpan);
+        return frag;
+    }
+
+    function buildDateTimeNodes(fmt, prefix) {
+        var frag = document.createDocumentFragment();
+        frag.appendChild(document.createTextNode(fmt.date + ', '));
+        frag.appendChild(buildStyledTime(fmt, prefix));
+        return frag;
+    }
+
+    function buildTimeOnlyNodes(fmt, prefix) {
+        return buildStyledTime(fmt, prefix);
+    }
+
+    /**
+     * Build full inline display.
+     *
+     * TZ placement rules:
+     * - Single point: TZ after the time.
+     * - Range, both same TZ label: TZ once at the very end.
+     * - Range, different TZ labels: each endpoint gets its own TZ label.
+     */
+    function buildInlineDisplay(startUtcMs, startTz, endUtcMs, endTz, userTZ) {
+        var frag = document.createDocumentFragment();
+        var startIsServer = (startTz === 'server');
+        var endIsServer = endTz ? (endTz === 'server') : null;
+        var startOff = startIsServer ? 0 : userTZ.offsetMin;
+        var endOff = (endUtcMs !== null) ? (endIsServer ? 0 : userTZ.offsetMin) : 0;
+        var forceYear = needForceYear(startUtcMs, startOff, endUtcMs, endOff);
+
+        var startFmt = formatInOffset(startUtcMs, startOff, forceYear);
+        var startLabel = inlineTzLabel(startTz, userTZ);
+
+        // Single point
+        if (endUtcMs === null) {
+            frag.appendChild(buildDateTimeNodes(startFmt, 'dt-'));
+            frag.appendChild(buildTzNode(startLabel, 'dt-'));
+            return frag;
+        }
+
+        var endFmt = formatInOffset(endUtcMs, endOff, forceYear);
+        var endLabel = inlineTzLabel(endTz, userTZ);
+        var sameTzLabel = (startLabel === endLabel);
+
+        // Start datetime
+        frag.appendChild(buildDateTimeNodes(startFmt, 'dt-'));
+        // If different TZ labels, put start's label here
+        if (!sameTzLabel) {
+            frag.appendChild(buildTzNode(startLabel, 'dt-'));
+        }
+
+        // Separator
+        frag.appendChild(document.createTextNode(' – '));
+
+        // End datetime (collapsed if same day)
+        if (sameDay(startFmt, endFmt)) {
+            frag.appendChild(buildTimeOnlyNodes(endFmt, 'dt-'));
+        } else {
+            frag.appendChild(buildDateTimeNodes(endFmt, 'dt-'));
+        }
+
+        // If different TZ labels, put end's label here; if same, put shared label here
+        frag.appendChild(buildTzNode(endLabel, 'dt-'));
+
+        return frag;
+    }
+
+    // --- Tooltip construction ---
+
+    function buildTooltipLines(startUtcMs, startTz, endUtcMs, endTz, serverFilter, userTZ) {
+        var serverKeys = Object.keys(SERVERS);
+        var lines = [];
+        var startIsServer = (startTz === 'server');
+        var endIsServer = endTz ? (endTz === 'server') : null;
+
+        for (var i = 0; i < serverKeys.length; i++) {
+            var key = serverKeys[i];
+            if (serverFilter && serverFilter !== key) continue;
+            var srv = SERVERS[key];
+
+            // Compute start in display tz
+            var startDisplayUtc, startOff, startTzLabel;
+            if (startIsServer) {
+                startDisplayUtc = startUtcMs - srv.offsetMin * 60000;
+                startOff = userTZ.offsetMin;
+                startTzLabel = userTZ.abbr;
+            } else {
+                startDisplayUtc = startUtcMs;
+                startOff = srv.offsetMin;
+                startTzLabel = formatOffset(srv.offsetMin);
+            }
+
+            // Single point
+            if (endUtcMs === null) {
+                var sf = formatInOffset(startDisplayUtc, startOff, false);
+                var singleFrag = document.createDocumentFragment();
+                singleFrag.appendChild(buildDateTimeNodes(sf, 'dt-tt-'));
+                singleFrag.appendChild(buildTzNode(startTzLabel, 'dt-tt-'));
+                lines.push({ label: srv.label, frag: singleFrag });
+                continue;
+            }
+
+            // Compute end in display tz
+            var endDisplayUtc, endOff, endTzLabel;
+            if (endIsServer) {
+                endDisplayUtc = endUtcMs - srv.offsetMin * 60000;
+                endOff = userTZ.offsetMin;
+                endTzLabel = userTZ.abbr;
+            } else {
+                endDisplayUtc = endUtcMs;
+                endOff = srv.offsetMin;
+                endTzLabel = formatOffset(srv.offsetMin);
+            }
+
+            var forceYear = needForceYear(startDisplayUtc, startOff, endDisplayUtc, endOff);
+            var sf2 = formatInOffset(startDisplayUtc, startOff, forceYear);
+            var ef = formatInOffset(endDisplayUtc, endOff, forceYear);
+            var sameTz = (startTzLabel === endTzLabel);
+
+            var rangeFrag = document.createDocumentFragment();
+
+            // Start
+            rangeFrag.appendChild(buildDateTimeNodes(sf2, 'dt-tt-'));
+            if (!sameTz) {
+                rangeFrag.appendChild(buildTzNode(startTzLabel, 'dt-tt-'));
+            }
+
+            rangeFrag.appendChild(document.createTextNode(' – '));
+
+            // End (collapsed if same day)
+            if (sameDay(sf2, ef)) {
+                rangeFrag.appendChild(buildTimeOnlyNodes(ef, 'dt-tt-'));
+            } else {
+                rangeFrag.appendChild(buildDateTimeNodes(ef, 'dt-tt-'));
+            }
+
+            // TZ at end (shared or end-specific)
+            rangeFrag.appendChild(buildTzNode(endTzLabel, 'dt-tt-'));
+
+            lines.push({ label: srv.label, frag: rangeFrag });
+        }
+
+        return lines;
+    }
+
+    // --- Tooltip DOM ---
+
+    function createTooltipEl(lines) {
+        if (!lines.length) return null;
+        var container = document.createElement('span');
+        container.className = 'dt-tooltip';
+
+        for (var i = 0; i < lines.length; i++) {
+            var row = document.createElement('span');
+            row.className = 'dt-tooltip-row';
+
+            if (lines[i].label) {
+                var label = document.createElement('span');
+                label.className = 'dt-tooltip-label';
+                label.textContent = lines[i].label + ': ';
+                row.appendChild(label);
+            }
+
+            if (lines[i].frag) {
+                var val = document.createElement('span');
+                val.className = 'dt-tooltip-value';
+                val.appendChild(lines[i].frag);
+                row.appendChild(val);
+            } else if (lines[i].text) {
+                var val2 = document.createElement('span');
+                val2.className = 'dt-tooltip-value';
+                val2.textContent = lines[i].text;
+                row.appendChild(val2);
+            }
+
+            container.appendChild(row);
+        }
+
+        return container;
+    }
+
+    // --- Main processing ---
+
+    function processElement(el) {
+        if (el.classList.contains(HANDLED_CLASS)) return;
+        if (!el.hasAttribute('data-dt-start')) {
+            el.classList.add(HANDLED_CLASS);
+            return;
+        }
+
+        var userTZ = getUserTZ();
+
+        var startISO = el.getAttribute('data-dt-start');
+        var startTzStr = el.getAttribute('data-dt-start-tz') || 'server';
+        var endISO = el.getAttribute('data-dt-end');
+        var endTzStr = el.getAttribute('data-dt-end-tz') || 'server';
+        var serverFilter = el.getAttribute('data-dt-server') || null;
+        var hasRaw = el.hasAttribute('data-dt-raw');
+
+        var startUtcMs = parseToUTCms(startISO, startTzStr);
+        var endUtcMs = parseToUTCms(endISO, endTzStr);
+
+        if (startUtcMs !== null && !hasRaw) {
+            while (el.firstChild) el.removeChild(el.firstChild);
+            el.appendChild(buildInlineDisplay(
+                startUtcMs, startTzStr, endUtcMs, endTzStr, userTZ
+            ));
+        }
+
+        var tooltipLines = buildTooltipLines(
+            startUtcMs, startTzStr, endUtcMs, endTzStr, serverFilter, userTZ
+        );
+
+        if (tooltipLines.length) {
+            var tooltip = createTooltipEl(tooltipLines);
+            if (tooltip) {
+                el.appendChild(tooltip);
+                el.classList.add('dt-has-tooltip');
+                if (!el.hasAttribute('tabindex')) {
+                    el.setAttribute('tabindex', '0');
+                }
+            }
+        }
+
+        el.classList.add(HANDLED_CLASS);
+    }
+
+    function init() {
+        var elements = document.querySelectorAll('.dt-inline:not(.' + HANDLED_CLASS + ')');
+        for (var i = 0; i < elements.length; i++) {
+            processElement(elements[i]);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    if (typeof mw !== 'undefined' && mw.hook) {
+        mw.hook('wikipage.content').add(function () { init(); });
+    }
+
+})();
+
+</script>
+<script>
+    document.getElementById('tz-display').textContent = (function() {
+        var d = new Date();
+        var off = -d.getTimezoneOffset();
+        var sign = off >= 0 ? '+' : '-';
+        var abs = Math.abs(off);
+        var h = Math.floor(abs / 60);
+        var m = abs % 60;
+        try {
+            var parts = new Intl.DateTimeFormat('en-US', { timeZoneName: 'long' })
+                .formatToParts(d);
+            for (var i = 0; i < parts.length; i++) {
+                if (parts[i].type === 'timeZoneName') {
+                    return parts[i].value + ' (UTC' + sign + h + (m ? ':' + (m<10?'0':'') + m : '') + ')';
+                }
+            }
+        } catch(e) {}
+        return 'UTC' + sign + h;
+    })();
+</script>
+</body>
+</html>
