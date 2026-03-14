@@ -4,7 +4,7 @@ This is a Mediawiki gadget for game wikis with a few game servers in different t
 
 This gadget will format times and timespans as inline text with a tooltip (accessible on hover or tap) that translates the time to the user's local time. The information is kept minimal for compactness but expansion occurs as needed for precision.
 
-[Demo page](https://solidkalium.github.io/inline-datetime/test.html)
+[Demo page](https://solidkalium.github.io/inline-datetime/)
 
 Example tooltip:
 

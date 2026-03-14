@@ -12,7 +12,7 @@ python3 scripts/build_artifacts.py
 
 This generates:
 
-* `dist/test.html`
+* `dist/index.html`
   * A self-contained demo page built from `test/test.template.html`
   * Embeds the current `gadget/inline-datetime.js` and `gadget/inline-datetime.css`
 * `dist/mediawiki-export.xml`
@@ -29,7 +29,7 @@ This generates:
 
 Edit `test/test.template.html` if you want to change the demo page structure or add more examples.
 
-Do not manually edit `dist/test.html`. Rebuild it from the template instead.
+Do not manually edit `dist/index.html`. Rebuild it from the template instead.
 
 ## MediaWiki import workflow
 

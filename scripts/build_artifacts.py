@@ -139,7 +139,8 @@ def build_test_page(dist_dir: Path) -> Path:
     js = indent_block(read_text(ROOT / "gadget" / "inline-datetime.js").rstrip(), "    ")
     interactive_cases = render_test_cases(interactive=True)
     fallback_cases = render_test_cases(interactive=False)
-    test_output = dist_dir / "test.html"
+    test_output = dist_dir / "index.html"
+    legacy_output = dist_dir / "test.html"
 
     output = (
         template
@@ -149,6 +150,8 @@ def build_test_page(dist_dir: Path) -> Path:
         .replace(TEST_CASES_FALLBACK_MARKER, fallback_cases)
     )
     write_text(test_output, output + "\n")
+    if legacy_output.exists():
+        legacy_output.unlink()
     return test_output
 
 
