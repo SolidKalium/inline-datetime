@@ -129,6 +129,23 @@ Time and timespan formatting is the same whether inline or in the tooltip.
     * Long lines are accepted since we're already keeping content tight.
 * Must look ok when Javascript is disabled
 
+## Error handling
+
+### Error states
+* **Hard error** (`dt-error dt-error-hard`): `start` is absent or blank. There is no safe fallback text, so the span displays "[no start time specified]" in red by default. `raw` is not shown — it is meaningless without a start time to generate a tooltip from.
+* **Soft error** (`dt-error dt-error-soft`): `start` or `end` is present but cannot be parsed. No half-valid state is supported — if either is invalid the pair is treated as fully invalid. The span displays the intended text: `raw` if provided, otherwise the original input strings. No default color is applied since the text itself is visible to visitors.
+
+### Styling
+* `dt-error-hard` and `dt-error-soft` can be targeted individually or together via a shared selector.
+* Neither class has structural styles that need to be preserved; wikis can freely override both.
+* During MediaWiki edit preview (`#wikiPreview`), both classes receive a dashed red outline so editors notice errors before saving.
+* Additional visible indicators (e.g. icon via `::before`) can be added in a local stylesheet without changing the markup.
+
+### Error tracking
+* All error spans append `[[Category:Pages with InlineDateTime errors]]` to the page output.
+* The category does not need to be manually created to function — pages are tracked automatically. The category page can be created later to add a description.
+* `[[Category:...]]` emits no visible inline content; it only adds the page to the category list shown at the bottom of the page.
+
 ## Considerations
 
 ### Style considerations

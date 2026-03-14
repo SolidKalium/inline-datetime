@@ -87,6 +87,8 @@ Useful CSS variables:
 * `--dt-tooltip-bg`: tooltip background color
 * `--dt-tooltip-fg`: tooltip foreground color
 
+For error CSS, see [#error-handling in the specifications](specifications.md#error-handling).
+
 
 ## Q & A
 * What alternatives were considered?

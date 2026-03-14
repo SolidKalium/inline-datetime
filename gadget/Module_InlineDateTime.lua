@@ -24,7 +24,7 @@ local function htmlEscape(s)
 end
 
 local function hardErrorSpan()
-    return '<span class="dt-error dt-error-hard"></span>' .. ERROR_CATEGORY
+    return '<span class="dt-error dt-error-hard">[no start time specified]</span>' .. ERROR_CATEGORY
 end
 
 local function softErrorSpan(display)
