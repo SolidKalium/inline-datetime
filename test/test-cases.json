@@ -177,6 +177,18 @@
             "data-dt-end": "2026-03-13T06:00+08:00",
             "data-dt-end-tz": "+8"
           }
+        },
+        {
+          "title": "US DST ends during the displayed span",
+          "description_before": "Overnight maintenance around the fall clock change:",
+          "fallback": "Nov 1, 00:30 – 02:30 (UTC-4)",
+          "attrs": {
+            "data-dt-start": "2026-11-01T00:30-04:00",
+            "data-dt-start-tz": "-4",
+            "data-dt-end": "2026-11-01T02:30-05:00",
+            "data-dt-end-tz": "-5"
+          },
+          "note": "In a U.S. browser timezone that observes DST, the localized inline output may need different timezone labels on each side of the span, such as EDT then EST."
         }
       ]
     }

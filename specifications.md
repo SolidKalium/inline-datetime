@@ -48,8 +48,8 @@ Time and timespan formatting is the same whether inline or in the tooltip.
   * Server time: the generic server time
 * Inherits styling applied around it (e.g. bold or italics)
   * If Javascript is enabled, affordances like a dashed underline are displayed to indicate there is a tooltip available.
-* If `raw` is specified, it is the inline text. `start` and `end` will only affect the tooltip.
-* If Javascript is disabled, the fallback value is shown. This is a non-localized description that applies to all servers. It uses the timezone given to the template.
+* If `raw` is specified, it is the inline text. `start` and `end` will only affect the tooltip. The description relevant to all servers isn't displayed at all; it isn't moved into the tooltip.
+* If Javascript is disabled, the fallback value is shown. This is a non-localized description that applies to all servers. It uses the timezone given to the template. The fallback text currently isn't styled.
 
 ### Tooltip behavior
 * Each server gets its own line showing the time (or timespan) in a server-specific manner.

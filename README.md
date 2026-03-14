@@ -68,9 +68,7 @@ TODO link to xml download
   * The server configs are hardcoded, but should live in json.
 * Undefined behavior (document the results)
   * What if someone puts it in a header, in italics text, etc?
-  * How are we handling timezone abbreviation changes locally? e.g. DST starting/ending in the middle
-  * Did we handle no-JS formatting? Update spec if so.
-  * did the tooltip for raw text end up with three lines? Update spec.md if so.
+  * How are we handling timezone abbreviation changes locally? e.g. DST starting/ending in the middle. It doesn't look like it...
   * What actually happens when the language isn't english? Does the i18n date give non-english month names?
 * Change all time zone to timezone, in-line to inline?
 * Decide on file names and project name
