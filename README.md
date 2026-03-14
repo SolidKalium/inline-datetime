@@ -45,7 +45,6 @@ TODO image of a tooltip
 ## TODO
 * usage documentation (specs, docs, visual test page)
   * Need to support at least on-wiki and on-web
-* add license
 * organize files. What's the normal way for a gadget?
 * AI directions?
 * improve visual test page
@@ -70,17 +69,17 @@ TODO
 
 ## Q & A
 
-TODO add links
 * What alternatives were considered?
   * [**TZclock** gadget](https://dev.fandom.com/wiki/TZclock): This displays the current time in a specified time zone. It can't display a specific moment in time in the user's timezone. It uses its own implementation of calculating time zones instead of using built in capabilities in Lua or Javascript.
-  * **clock** gadget: This shows the current server times and countdowns until resets. It doesn't support inline display or showing specific times or timespans.
-  * **countdown** ?gadget: This inserts a live countdown into a line of text. When the time is in the past, a different message is shown.
+  * [**clock**](https://endfield.wiki.gg/wiki/MediaWiki:Gadgets/clock/main.css) and [**clockScripts**](https://endfield.wiki.gg/wiki/MediaWiki:Gadgets/clockScripts/main.js) gadgets: This shows the current server times and countdowns until resets. It doesn't support inline display or showing specific times or timespans.
+  * [**countdown** script](https://dev.fandom.com/wiki/Countdown): This inserts a live countdown into a line of text. When the time is in the past, a different message is shown.
     * Note: For events with a known timespan (e.g. Jan 6-7) starting in the future (e.g. today is Jan 1), it isn't possible to set a single countdown. Instead, the countdown must be set to start counting down until the start, after which it will automatically show a static message like "event is live!". Then if you want to show a countdown until the event ends, you need to edit in a replacement countdown.
-  * **TimezoneConverter** extension: not currently approved on wiki.gg, and doesn't have the same functionality for showing times on multiple servers.
+  * [**TimezoneConverter** extension](https://www.mediawiki.org/wiki/Extension:TimezoneConverter): not currently approved on wiki.gg, and only shows one time in the user's timezone. But it does accept any time format PHP can make sense of.
 * Is this vibe coded slop?
   * Sure: it isn't hand crafted. But there is a specification document and a visual test suite.
 * Why doesn't it do X?
   * Features not needed for the initial use case were avoided to reduce unneeded complexity. The initial server already didn't have language or time format localization, so those weren't considered necessary.
   * The gadget is designed to be flexible yet have minimal input surface area. That means as little magic parsing as possible and keeping outputs minimal and predictable.
 * Can I contribute?
-  * Yes! This is an open source project that you can fork and use as you wish. Currently, this project has only one contributor and once it meets the needs of the intended wiki, it might or might not be maintained. If you have a simple bug fix, I will be happy to test and accept it. If you want to take over as maintainer and have added some features, I'd be happy to add a link from my repository.
+  * Yes! This is an open source project that you can fork and use as you wish. Currently, this project has only one contributor and once it meets the needs of the intended wiki, it might or might not be maintained. If you have a simple bug fix, I will be happy to test and accept it. If you want to take over as maintainer and have added some features, I'd be happy to add a link from my repository to yours.
+  * Any contributions submitted for inclusion in this project are assumed to be under the same license as the project, unless stated otherwise.
