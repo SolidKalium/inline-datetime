@@ -43,10 +43,10 @@ TODO image of a tooltip
 * Disable tooltip (other than by disabling js)
 
 ## TODO
-* usage documentation (specs, docs, visual test page)
-  * Need to support at least on-wiki and on-web
 * organize files. What's the normal way for a gadget?
 * AI directions?
+* usage documentation (specs, docs, visual test page)
+  * Need to support at least on-wiki and on-web
 * improve visual test page
   * Native js/no-js preview?
   * Github auto-build?
