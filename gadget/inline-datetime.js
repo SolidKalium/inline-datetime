@@ -487,6 +487,25 @@
                 if (!el.hasAttribute('tabindex')) {
                     el.setAttribute('tabindex', '0');
                 }
+                el.setAttribute('role', 'button');
+                el.setAttribute('aria-expanded', 'false');
+                el.addEventListener('click', function () {
+                    var isOpen = el.classList.contains('dt-open');
+                    el.classList.toggle('dt-open', !isOpen);
+                    el.setAttribute('aria-expanded', String(!isOpen));
+                });
+                el.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') {
+                        if (el.classList.contains('dt-open')) {
+                            el.classList.remove('dt-open');
+                            el.setAttribute('aria-expanded', 'false');
+                            e.stopPropagation();
+                        }
+                    } else if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        el.click();
+                    }
+                });
             }
         }
 

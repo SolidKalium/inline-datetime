@@ -12,14 +12,13 @@
   * How will MediaWiki handle "duplicate" pages?
 * audit code for readability and obviousness
   * Maybe do a little work to make styling and regional time formats be better supported?
+  * Don't force en-us for formatting? Or at least not for getting a timezone short name.
   * What timezone formats are supported as inputs? +8, UTC+8, etc? Note in spec.
 * Bugs
-  * Tooltip supports click to open. Stays open when clicking again. Is that expected? Maybe close on second click? And/or just make it being open be tap only? Currently tabbable. Is that a good idea?
   * The server configs are hardcoded, but should live in json.
   * Need to ensure error visibility when given a bad (or likely bad) input
     * Should add an error category tag and pass the input as output. If either start or end is bad, just do this.
 * Undefined behavior (document the results)
   * What if someone puts it in a header, in italics text, etc?
-  * How are we handling timezone abbreviation changes locally? e.g. DST starting/ending in the middle. It doesn't look like it...
   * What actually happens when the language isn't english? Does the i18n date give non-english month names?
 * Tooling or advice to help find dates that aren't using the template?

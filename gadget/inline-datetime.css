@@ -12,7 +12,7 @@
 /* === Inline element: affordance after JS processes === */
 .dt-inline.dt-handled {
     border-bottom: 1px dashed currentColor;
-    cursor: help;
+    cursor: pointer;
     display: inline;
     position: relative;
 }
@@ -62,10 +62,9 @@
     border-top-color: var(--dt-tooltip-bg, #2a2a2e);
 }
 
-/* Show on hover and focus */
+/* Show on hover or when explicitly opened */
 .dt-inline.dt-has-tooltip:hover .dt-tooltip,
-.dt-inline.dt-has-tooltip:focus .dt-tooltip,
-.dt-inline.dt-has-tooltip:focus-within .dt-tooltip {
+.dt-inline.dt-has-tooltip.dt-open .dt-tooltip {
     display: block;
 }
 

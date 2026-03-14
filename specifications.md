@@ -66,6 +66,28 @@ Time and timespan formatting is the same whether inline or in the tooltip.
 * To make testing easier, a fake browser timezone can be set.
   * Note: Intl provides short timezone descriptions like "GMT+1" instead of "BST" when the timezone isn't common in the browser's locale (e.g. "en-US" instead of "en-GB"). This is to prevent confusion from multiple timezones using the same abbreviation.
 
+## Accessibility
+
+### Semantics
+* The inline element is given `role="button"` when a tooltip is available, indicating it is interactive.
+* `aria-expanded` reflects whether the tooltip is explicitly open (`"true"`) or closed (`"false"`).
+* `tabindex="0"` ensures the element is reachable by keyboard even if the host element is not natively focusable.
+
+### Keyboard interaction
+* **Tab / Shift+Tab**: moves focus to and from the element.
+* **Enter or Space**: toggles the tooltip open or closed (matching standard button behavior).
+* **Escape**: closes an open tooltip and stops event propagation so the key does not bubble to page-level handlers.
+
+### Pointer interaction
+* A single click toggles the tooltip open or closed.
+* Hovering also shows the tooltip, so mouse users who do not click still see it.
+* `cursor: pointer` provides a visual affordance that the element is interactive.
+
+### What is not in scope
+* The tooltip content is informational only and has no interactive elements, so focus does not move into it.
+* No live region announcements are made when the tooltip opens; `aria-expanded` on the trigger communicates state to assistive technology.
+* If Javascript is disabled, the tooltip is unavailable entirely; there is no accessible fallback for the tooltip content.
+
 ## Architecture
 * Lua module (Module:InlineDateTime)
   * parses input
