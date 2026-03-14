@@ -20,7 +20,11 @@ All parameters are optional except `start`/`1`.
 
 There are two main parts of the display: the inline text and the tooltip.
 
-TODO example tooltip image (same as README)
+Example tooltips:
+
+| Single time | Timespan | Mixed / different timezones |
+| --- | --- | --- |
+| ![Single time tooltip example](images/example_tt_single_time.png) | ![Timespan tooltip example](images/example_tt_timespan.png) | ![Tooltip example with different timezone labels](images/example_tt_different_tz.png) |
 
 ### Time formatting
 

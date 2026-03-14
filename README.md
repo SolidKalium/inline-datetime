@@ -4,7 +4,9 @@ This is a Mediawiki gadget for game wikis with a few game servers in different t
 
 This gadget will format times and timespans as inline text with a tooltip (accessible on hover or tap) that translates the time to the user's local time. The information is kept minimal for compactness but expansion occurs as needed for precision.
 
-TODO image of a tooltip
+Example tooltip:
+
+<img src="images/example_tt_timespan.png" alt="Example tooltip showing a timespan across servers" width="420">
 
 Push to git, then:
 TODO link to demo page
