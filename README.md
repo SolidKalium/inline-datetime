@@ -51,9 +51,8 @@ TODO link to xml download
 ## TODO
 * align usage documentation (specs, wiki doc page, visual test page)
   * Need to support at least on-wiki and on-web
+  * Need test cases to be a little more strategic? Maybe show js, nojs, and wiki all together? Not sure we really need a test case for every possible situation. It would be overwhelming.
 * improve visual test page
-  * Native js/no-js preview?
-  * Test case list?
   * Support select-your-own timezone instead of the browser's default?
   * Support enter-your-own call to lua? (may need wasm Lua...)
 * Link the export file for mediawiki to import
@@ -65,7 +64,7 @@ TODO link to xml download
   * error visibility when given a bad (or likely bad) input?
   * rename the lua to inline-datetime? Or maybe use a different text that mentions the tooltip? inline-datetime-tooltip? That's kind of long..
 * Bugs
-  * Tooltip supports click to keep it open. Stays open when clicking again. Is that expected? Maybe close on second click? And/or just make it being open be tap only? Currently tabbable. Is that a good idea?
+  * Tooltip supports click to open. Stays open when clicking again. Is that expected? Maybe close on second click? And/or just make it being open be tap only? Currently tabbable. Is that a good idea?
   * The server configs are hardcoded, but should live in json.
 * Undefined behavior (document the results)
   * What if someone puts it in a header, in italics text, etc?
@@ -75,6 +74,7 @@ TODO link to xml download
   * What actually happens when the language isn't english? Does the i18n date give non-english month names?
 * Change all time zone to timezone, in-line to inline?
 * Decide on file names and project name
+* Tooling or advice to help find dates that aren't using the template?
 
 
 ## Install and Configure
