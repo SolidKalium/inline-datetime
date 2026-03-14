@@ -42,3 +42,7 @@ The optional `Template:IDT` alias is also not included in the export bundle. If 
 ## GitHub Actions
 
 The workflow at `.github/workflows/build-artifacts.yml` runs the same build script and uploads both generated artifacts.
+
+To enable GitHub Pages: go to `Settings -> Pages` in the repository, then select "GitHub Actions" as the build and deployment source.
+
+*Note: As of March 2026, GitHub has announced that Actions using Node 20 are being deprecated. But they haven't released newer versions for some of the Actions they provide, including configure-pages@v5 and deploy-pages@v4.*
