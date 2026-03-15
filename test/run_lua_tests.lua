@@ -1,25 +1,7 @@
 -- Run from project root: luajit test/run_lua_tests.lua
 
 -- ── Shims ────────────────────────────────────────────────────────────────────
--- Minimal mw environment needed by Module:InlineDateTime.
--- mw.text.trim is the only mw function the module calls directly;
--- os.date (standard Lua) is used as-is.
-
-mw = {
-    text = {
-        trim = function(s)
-            if type(s) ~= 'string' then return s end
-            return s:match('^%s*(.-)%s*$')
-        end
-    }
-}
-
--- Builds a fake frame object. The module calls frame:getParent().args,
--- so we only need to shim that path.
-local function makeFrame(args)
-    local parent = { args = args }
-    return { getParent = function() return parent end }
-end
+dofile('test/mw_shims.lua')
 
 -- ── Load module ───────────────────────────────────────────────────────────────
 

@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
+import subprocess
 from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -51,6 +54,68 @@ EXPORT_PAGES = [
     },
 ]
 
+_LUAJIT: str | None = None
+
+
+def _get_luajit() -> str:
+    global _LUAJIT
+    if _LUAJIT is None:
+        exe = shutil.which("luajit")
+        if not exe:
+            raise SystemExit(
+                "Error: luajit not found.\n"
+                "  macOS / Linux (Homebrew): brew install luajit\n"
+                "  Ubuntu / Debian:          sudo apt-get install luajit"
+            )
+        _LUAJIT = exe
+    return _LUAJIT
+
+
+class _SpanParser(HTMLParser):
+    """Extract text content from the outermost <span> in Lua module output."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._parts: list[str] = []
+        self._depth: int = 0
+
+    def handle_starttag(self, tag: str, attrs: list) -> None:
+        if tag == "span":
+            self._depth += 1
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "span":
+            self._depth -= 1
+
+    def handle_data(self, data: str) -> None:
+        if self._depth > 0:
+            self._parts.append(data)
+
+    @property
+    def text(self) -> str:
+        return "".join(self._parts)
+
+
+def render_via_lua(args: dict[str, str]) -> tuple[str, str]:
+    """Render a test case through Module:InlineDateTime using luajit.
+
+    Returns (full_span_html, fallback_text).
+    full_span_html: the raw HTML span output from Lua, used as-is in the
+                    interactive view so JS can process it.
+    fallback_text:  the plain text content of that span, used in the
+                    fallback view inside a plain <span>.
+    """
+    cmd = [_get_luajit(), "scripts/lua_render.lua"] + [
+        f"{k}={v}" for k, v in args.items()
+    ]
+    result = subprocess.run(
+        cmd, capture_output=True, text=True, check=True, cwd=ROOT
+    )
+    span_html = result.stdout.strip()
+    parser = _SpanParser()
+    parser.feed(span_html)
+    return span_html, parser.text
+
 
 def read_text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
@@ -69,53 +134,62 @@ def html_escape(text: str) -> str:
     return escape(text, {'"': "&quot;"})
 
 
-def render_case(case: dict, prefix: str, interactive: bool) -> str:
+def render_case(
+    case: dict,
+    prefix: str,
+    interactive: bool,
+    lua_span: str,
+    lua_text: str,
+) -> str:
     lines = []
 
     title = case.get("title")
     if title:
         lines.append(f"{prefix}<h3>{html_escape(title)}</h3>")
 
-    lines.append(f"{prefix}<div class=\"example\">")
+    lines.append(f'{prefix}<div class="example">')
 
     note = case.get("note")
     if note:
-        lines.append(f"{prefix}    <p class=\"note\">{html_escape(note)}</p>")
+        lines.append(f'{prefix}    <p class="note">{html_escape(note)}</p>')
 
     description_before = case.get("description_before", "")
     description_after = case.get("description_after", ".")
-    fallback = html_escape(case["fallback"])
 
     if interactive:
-        attrs = " ".join(
-            f'{name}="{html_escape(value)}"'
-            for name, value in case.get("attrs", {}).items()
-        )
-        span_open = f"<span class=\"dt-inline\" {attrs}>"
         lines.append(
             f"{prefix}    <p>{html_escape(description_before)}"
-            f"{' ' if description_before else ''}{span_open}{fallback}</span>{html_escape(description_after)}</p>"
+            f"{' ' if description_before else ''}{lua_span}{html_escape(description_after)}</p>"
         )
     else:
         lines.append(
             f"{prefix}    <p>{html_escape(description_before)}"
-            f"{' ' if description_before else ''}<span>{fallback}</span>{html_escape(description_after)}</p>"
+            f"{' ' if description_before else ''}<span>{html_escape(lua_text)}</span>{html_escape(description_after)}</p>"
         )
 
     code = case.get("code")
     if code:
-        lines.append(f"{prefix}    <p class=\"note\"><code>{html_escape(code)}</code></p>")
+        lines.append(f'{prefix}    <p class="note"><code>{html_escape(code)}</code></p>')
 
     lines.append(f"{prefix}</div>")
     return "\n".join(lines)
 
 
-def render_test_cases(interactive: bool) -> str:
+def render_test_cases() -> tuple[str, str]:
+    """Render all test cases via Lua, returning (interactive_html, fallback_html).
+
+    Each case is rendered once through the Lua module; both views are built
+    from that single result.
+    """
     data = json.loads(read_text(TEST_CASES))
-    lines = []
+    interactive: list[str] = []
+    fallback: list[str] = []
 
     for section in data["sections"]:
-        lines.append(f"<h2>{html_escape(section['title'])}</h2>")
+        heading = f"<h2>{html_escape(section['title'])}</h2>"
+        interactive.append(heading)
+        fallback.append(heading)
+
         wrapper_class = section.get("wrapper_class")
         wrapper_style = section.get("wrapper_style")
         prefix = ""
@@ -124,26 +198,31 @@ def render_test_cases(interactive: bool) -> str:
             attrs = [f'class="{html_escape(wrapper_class)}"']
             if wrapper_style:
                 attrs.append(f'style="{html_escape(wrapper_style)}"')
-            lines.append(f"<div {' '.join(attrs)}>")
+            wrapper_open = f"<div {' '.join(attrs)}>"
+            interactive.append(wrapper_open)
+            fallback.append(wrapper_open)
             prefix = "    "
 
         for case in section["cases"]:
-            lines.append(render_case(case, prefix, interactive))
+            lua_span, lua_text = render_via_lua(case.get("args", {}))
+            interactive.append(render_case(case, prefix, True, lua_span, lua_text))
+            fallback.append(render_case(case, prefix, False, lua_span, lua_text))
 
         if wrapper_class:
-            lines.append("</div>")
+            interactive.append("</div>")
+            fallback.append("</div>")
 
-        lines.append("")
+        interactive.append("")
+        fallback.append("")
 
-    return "\n".join(lines).rstrip()
+    return "\n".join(interactive).rstrip(), "\n".join(fallback).rstrip()
 
 
 def build_test_page(dist_dir: Path) -> Path:
     template = read_text(TEST_TEMPLATE)
     css = indent_block(read_text(ROOT / "gadget" / "inline-datetime.css").rstrip(), "        ")
     js = indent_block(read_text(ROOT / "gadget" / "inline-datetime.js").rstrip(), "    ")
-    interactive_cases = render_test_cases(interactive=True)
-    fallback_cases = render_test_cases(interactive=False)
+    interactive_cases, fallback_cases = render_test_cases()
     test_output = dist_dir / "index.html"
     legacy_output = dist_dir / "test.html"
 

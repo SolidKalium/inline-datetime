@@ -6,33 +6,19 @@
         {
           "title": "Range, different dates",
           "description_before": "Combat Drills for Tangtang is available from",
-          "fallback": "Mar 12, 12:00 – Mar 29, 12:00 (server time)",
-          "attrs": {
-            "data-dt-start": "2026-03-12T12:00",
-            "data-dt-start-tz": "server",
-            "data-dt-end": "2026-03-29T12:00",
-            "data-dt-end-tz": "server"
-          },
+          "args": { "start": "2026-03-12 12:00", "end": "2026-03-29 12:00" },
           "code": "{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}",
           "note": "Inline should show \"(server)\" once at end. Tooltip shows your local time per server."
         },
         {
           "title": "Single time",
           "description_before": "The Red Knight becomes available at",
-          "fallback": "Mar 29, 12:00 (server time)",
-          "attrs": {
-            "data-dt-start": "2026-03-29T12:00",
-            "data-dt-start-tz": "server"
-          }
+          "args": { "start": "2026-03-29 12:00" }
         },
         {
           "title": "Non-zero minutes",
           "description_before": "Event ends at",
-          "fallback": "Mar 29, 11:59 (server time)",
-          "attrs": {
-            "data-dt-start": "2026-03-29T11:59",
-            "data-dt-start-tz": "server"
-          }
+          "args": { "start": "2026-03-29 11:59" }
         }
       ]
     },
@@ -42,38 +28,18 @@
         {
           "title": "Maintenance window (UTC+8)",
           "description_before": "Scheduled maintenance:",
-          "fallback": "Mar 12, 06:00 – 12:00 (UTC+8)",
-          "attrs": {
-            "data-dt-start": "2026-03-12T06:00+08:00",
-            "data-dt-start-tz": "+8",
-            "data-dt-end": "2026-03-12T12:00+08:00",
-            "data-dt-end-tz": "+8"
-          },
+          "args": { "start": "2026-03-12 06:00 +8", "end": "2026-03-12 12:00 +8" },
           "note": "Inline shows your local time with your TZ once at end of range. Tooltip shows each server's wall-clock."
         },
         {
           "title": "Filtered to Asia",
           "description_before": "Asia maintenance:",
-          "fallback": "Mar 12, 06:00 – 12:00 (UTC+8)",
-          "attrs": {
-            "data-dt-start": "2026-03-12T06:00+08:00",
-            "data-dt-start-tz": "+8",
-            "data-dt-end": "2026-03-12T12:00+08:00",
-            "data-dt-end-tz": "+8",
-            "data-dt-server": "asia"
-          }
+          "args": { "start": "2026-03-12 06:00 +8", "end": "2026-03-12 12:00 +8", "server": "asia" }
         },
         {
           "title": "Filtered to Americas",
           "description_before": "Americas maintenance:",
-          "fallback": "Mar 11, 17:00 – 23:00 (UTC-5)",
-          "attrs": {
-            "data-dt-start": "2026-03-11T17:00-05:00",
-            "data-dt-start-tz": "-5",
-            "data-dt-end": "2026-03-11T23:00-05:00",
-            "data-dt-end-tz": "-5",
-            "data-dt-server": "americas"
-          }
+          "args": { "start": "2026-03-11 17:00 -5", "end": "2026-03-11 23:00 -5", "server": "americas" }
         }
       ]
     },
@@ -82,13 +48,7 @@
       "cases": [
         {
           "description_before": "Event begins after maintenance, runs until server reset:",
-          "fallback": "Mar 12, 12:00 (UTC+8) – Mar 29, 04:00 (server)",
-          "attrs": {
-            "data-dt-start": "2026-03-12T12:00+08:00",
-            "data-dt-start-tz": "+8",
-            "data-dt-end": "2026-03-29T04:00",
-            "data-dt-end-tz": "server"
-          },
+          "args": { "start": "2026-03-12 12:00 +8", "end": "2026-03-29 04:00" },
           "note": "Start gets your TZ (EDT), end gets \"(server)\" so both labels are shown."
         }
       ]
@@ -99,13 +59,10 @@
         {
           "title": "Raw text with start and end",
           "description_before": "Patch notes wording:",
-          "fallback": "After maintenance until Mar 29 reset",
-          "attrs": {
-            "data-dt-start": "2026-03-12T12:00+08:00",
-            "data-dt-start-tz": "+8",
-            "data-dt-end": "2026-03-29T04:00",
-            "data-dt-end-tz": "server",
-            "data-dt-raw": "1"
+          "args": {
+            "start": "2026-03-12 12:00 +8",
+            "end": "2026-03-29 04:00",
+            "raw": "After maintenance until Mar 29 reset"
           },
           "code": "{{dt|start=2026-03-12 12:00 +8|end=2026-03-29 04:00|raw=After maintenance until Mar 29 reset}}",
           "note": "Inline text should stay exactly as provided. Tooltip should still be built from the datetime parameters."
@@ -113,13 +70,7 @@
         {
           "title": "Raw text for a single time and with a server filter",
           "description_before": "Asia-only schedule note:",
-          "fallback": "Asia server daily reset",
-          "attrs": {
-            "data-dt-start": "2026-03-29T04:00",
-            "data-dt-start-tz": "server",
-            "data-dt-server": "asia",
-            "data-dt-raw": "1"
-          },
+          "args": { "start": "2026-03-29 04:00", "server": "asia", "raw": "Asia server daily reset" },
           "code": "{{dt|start=2026-03-29 04:00|server=asia|raw=Asia server daily reset}}",
           "note": "Inline text should remain raw, and the tooltip should be limited to the specified server."
         }
@@ -131,24 +82,12 @@
         {
           "title": "Previous year (beta test, 2025)",
           "description_before": "Second beta test:",
-          "fallback": "Nov 27, 2025, 22:00 – Dec 29, 2025, 01:00 (UTC-5)",
-          "attrs": {
-            "data-dt-start": "2025-11-27T22:00-05:00",
-            "data-dt-start-tz": "-5",
-            "data-dt-end": "2025-12-29T01:00-05:00",
-            "data-dt-end-tz": "-5"
-          }
+          "args": { "start": "2025-11-27 22:00 -5", "end": "2025-12-29 01:00 -5" }
         },
         {
           "title": "Cross-year range (Dec 2025 - Jan 2026)",
           "description_before": "Holiday event:",
-          "fallback": "Dec 20, 2025, 12:00 – Jan 10, 2026, 04:00 (server)",
-          "attrs": {
-            "data-dt-start": "2025-12-20T12:00",
-            "data-dt-start-tz": "server",
-            "data-dt-end": "2026-01-10T04:00",
-            "data-dt-end-tz": "server"
-          },
+          "args": { "start": "2025-12-20 12:00", "end": "2026-01-10 04:00" },
           "note": "Year shown on both because they differ."
         }
       ]
@@ -159,35 +98,17 @@
         {
           "title": "Same-day in source TZ (may cross midnight in your TZ)",
           "description_before": "Flash sale:",
-          "fallback": "Mar 15, 10:00 – 14:00 (UTC+8)",
-          "attrs": {
-            "data-dt-start": "2026-03-15T10:00+08:00",
-            "data-dt-start-tz": "+8",
-            "data-dt-end": "2026-03-15T14:00+08:00",
-            "data-dt-end-tz": "+8"
-          }
+          "args": { "start": "2026-03-15 10:00 +8", "end": "2026-03-15 14:00 +8" }
         },
         {
           "title": "Crosses midnight in source TZ",
           "description_before": "Late-night event:",
-          "fallback": "Mar 12, 22:00 – Mar 13, 06:00 (UTC+8)",
-          "attrs": {
-            "data-dt-start": "2026-03-12T22:00+08:00",
-            "data-dt-start-tz": "+8",
-            "data-dt-end": "2026-03-13T06:00+08:00",
-            "data-dt-end-tz": "+8"
-          }
+          "args": { "start": "2026-03-12 22:00 +8", "end": "2026-03-13 06:00 +8" }
         },
         {
           "title": "US DST ends during the displayed span",
           "description_before": "Overnight maintenance around the fall clock change:",
-          "fallback": "Nov 1, 00:30 – 02:30 (UTC-4)",
-          "attrs": {
-            "data-dt-start": "2026-11-01T00:30-04:00",
-            "data-dt-start-tz": "-4",
-            "data-dt-end": "2026-11-01T02:30-05:00",
-            "data-dt-end-tz": "-5"
-          },
+          "args": { "start": "2026-11-01 00:30 -4", "end": "2026-11-01 02:30 -5" },
           "note": "In a U.S. browser timezone that observes DST, the localized inline output may need different timezone labels on each side of the span, such as EDT then EST."
         }
       ]
