@@ -41,7 +41,10 @@
     padding: 0.4em 0.6em;
     font-size: 0.875em;
     line-height: 1.4;
-    white-space: nowrap;
+    white-space: normal;
+    width: max-content;
+    max-width: calc(100vw - 16px);
+    overflow-wrap: break-word;
     z-index: 100;
     background-color: var(--dt-tooltip-bg, #2a2a2e);
     color: var(--dt-tooltip-fg, #e0e0e0);
@@ -51,12 +54,12 @@
     pointer-events: none;
 }
 
-/* Tooltip arrow */
+/* Tooltip arrow — left tracks --dt-tt-shift so it still points at the element after clamping */
 .dt-inline .dt-tooltip::after {
     content: '';
     position: absolute;
     top: 100%;
-    left: 50%;
+    left: calc(50% - var(--dt-tt-shift, 0px));
     transform: translateX(-50%);
     border: 5px solid transparent;
     border-top-color: var(--dt-tooltip-bg, #2a2a2e);

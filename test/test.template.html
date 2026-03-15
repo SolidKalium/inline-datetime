@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DateTime Component Test</title>
+    <title>Inline DateTime Gadget</title>
     <style>
         :root {
             --page-bg: #fff;
@@ -59,7 +59,7 @@
         .controls {
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 101;
             background: var(--page-bg);
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
             margin: 1.5em -1em 1em;
@@ -132,7 +132,6 @@
             border: 1px solid var(--page-border);
             border-radius: 4px;
             margin: 1.5em 0;
-            overflow: hidden;
             display: grid;
             grid-template-columns: 1fr 1fr;
         }
@@ -146,18 +145,28 @@
             background: var(--example-bg);
             border-right: 1px solid var(--page-border);
             border-bottom: 1px solid var(--page-border);
+            border-radius: 4px 0 0 0;
         }
         .dt-detail-code {
             background: var(--code-bg);
             border-bottom: 1px solid var(--page-border);
+            border-radius: 0 4px 0 0;
             word-break: break-all;
             font-size: 0.9em;
         }
         .dt-detail-js {
             border-right: 1px solid var(--page-border);
+            border-radius: 0 0 0 4px;
         }
         .dt-detail-nojs {
             background: var(--example-bg);
+            border-radius: 0 0 4px 0;
+        }
+        @media (max-width: 560px) {
+            .dt-detail-header { border-radius: 4px 4px 0 0; border-right: none; }
+            .dt-detail-code   { border-radius: 0; }
+            .dt-detail-js     { border-radius: 0; border-right: none; }
+            .dt-detail-nojs   { border-radius: 0 0 4px 4px; }
         }
         .dt-detail-label {
             font-size: 0.75em;
@@ -172,7 +181,7 @@
 </head>
 <body>
 
-<h1>DateTime Component</h1>
+<h1>Inline DateTime Gadget</h1>
 <p class="note">
     Hover over dash-underlined times for tooltip. On mobile, tap.
 </p>

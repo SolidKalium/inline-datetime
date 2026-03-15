@@ -430,6 +430,37 @@
         return lines;
     }
 
+    // --- Tooltip positioning ---
+
+    /**
+     * Clamp the tooltip horizontally so it stays within the viewport.
+     * The tooltip is position:absolute centered above el via translateX(-50%).
+     * If it would overflow left or right, shift it and counter-shift the arrow
+     * by setting --dt-tt-shift on the tooltip element (arrow CSS reads this).
+     */
+    function clampTooltip(tooltip) {
+        var MARGIN = 8;
+        // Reset to natural centered position before measuring so we work from
+        // the browser's actual computed position, not a JS approximation of it.
+        // This also handles wrapped inline elements where CSS left:50% may not
+        // equal el.getBoundingClientRect() center.
+        tooltip.style.transform = 'translateX(-50%)';
+        tooltip.style.setProperty('--dt-tt-shift', '0px');
+
+        var ttRect = tooltip.getBoundingClientRect(); // forces reflow; uses reset transform
+        var vw = document.documentElement.clientWidth;
+        var shift = 0;
+        if (ttRect.right > vw - MARGIN) {
+            shift = (vw - MARGIN) - ttRect.right;
+        } else if (ttRect.left < MARGIN) {
+            shift = MARGIN - ttRect.left;
+        }
+        if (shift !== 0) {
+            tooltip.style.transform = 'translateX(calc(-50% + ' + shift + 'px))';
+            tooltip.style.setProperty('--dt-tt-shift', shift + 'px');
+        }
+    }
+
     // --- Tooltip DOM ---
 
     function createTooltipEl(lines) {
@@ -508,10 +539,16 @@
                 }
                 el.setAttribute('role', 'button');
                 el.setAttribute('aria-expanded', 'false');
+                el.addEventListener('mouseenter', function () {
+                    clampTooltip(tooltip);
+                });
                 el.addEventListener('click', function () {
                     var isOpen = el.classList.contains('dt-open');
                     el.classList.toggle('dt-open', !isOpen);
                     el.setAttribute('aria-expanded', String(!isOpen));
+                    if (!isOpen) {
+                        clampTooltip(tooltip);
+                    }
                 });
                 el.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') {

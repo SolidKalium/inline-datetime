@@ -61,6 +61,9 @@ Time and timespan formatting is the same whether inline or in the tooltip.
   * Server time: the visitor's local time when the server is affected
 * If `server` was specified, then only that server is shown in the tooltip.
 * If Javascript is disabled, the tooltip isn't available.
+* The tooltip is `position: absolute` relative to the inline element. Any ancestor with `overflow: hidden` or `overflow: clip` will clip the tooltip — avoid wrapping `dt-inline` spans in such containers.
+* The tooltip is clamped horizontally to the viewport with a small margin so it does not clip off the edge of the page. Its width is also capped at the viewport width so it wraps on narrow screens rather than overflowing.
+* The tooltip `z-index` is fixed at 100. If the host page has sticky or fixed elements with a lower effective stacking context, the tooltip may appear on top of them. This cannot be resolved in the gadget without knowledge of the page's stacking context.
 
 ### Testing
 * To make testing easier, a fake browser timezone can be set.
