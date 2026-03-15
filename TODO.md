@@ -3,8 +3,7 @@
 ## Now
 
 * Improve lua fallback to be closer to the JS?
-* Need test cases to be a little more strategic?
-  * Fix tt overflow bug
+* Fix tt overflow bug on test page
 * verify usage documentation is aligned (specs, wiki doc page, visual test page)
 * Test the export file
   * How will MediaWiki handle "duplicate" pages?
@@ -22,3 +21,4 @@
 * improve visual test page
   * Support enter-your-own call to lua?
     * Would need WASM Lua. No official Scribunto or Lua 5.1 WASM, but wasmoon (Lua 5.4) and Fengari (Lua 5.3) exist.
+* Support a custom separator word, like 'to' or 'until'

@@ -4,12 +4,12 @@
       "title": "Server time (same wall-clock for all servers)",
       "cases": [
         {
-          "title": "Range, different dates",
+          "title": "Timespan, different dates",
           "description_before": "Combat Drills for Tangtang is available from",
           "description_after": ".",
           "args": { "start": "2026-03-12 12:00", "end": "2026-03-29 12:00" },
           "code": "{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}",
-          "note": "Inline should show \"(server)\" once at end. Tooltip shows your local time per server."
+          "note": "Inline text shows \"(server)\" once at the end. Tooltip shows your local time per server."
         },
         {
           "title": "Single time",
@@ -58,10 +58,10 @@
             "raw": "After maintenance until Mar 29 reset"
           },
           "code": "{{dt|start=2026-03-12 12:00 +8|end=2026-03-29 04:00|raw=After maintenance until Mar 29 reset}}",
-          "note": "Inline text should stay exactly as provided. Tooltip should still be built from the datetime parameters."
+          "note": "Inline text stays exactly as provided. Tooltip should still be built from the datetime parameters."
         },
         {
-          "title": "Raw text for a single time and with a server filter",
+          "title": "Raw text + single time + server filter",
           "description_before": "Asia-only schedule note:",
           "args": { "start": "2026-03-29 04:00", "server": "asia", "raw": "Asia server daily reset" },
           "code": "{{dt|start=2026-03-29 04:00|server=asia|raw=Asia server daily reset}}",
@@ -70,7 +70,7 @@
       ]
     },
     {
-      "title": "Previous year and cross-year",
+      "title": "Conditional year display",
       "cases": [
         {
           "title": "Previous year (beta test, 2025)",
@@ -80,7 +80,7 @@
         {
           "title": "Cross-year range (Dec 2025 - Jan 2026)",
           "description_before": "Holiday event:",
-          "description_after": " Special decorations and limited quests are available across all regions during this period.",
+          "description_after": ". Special decorations and limited quests are available across all regions during this period.",
           "args": { "start": "2025-12-20 12:00", "end": "2026-01-10 04:00" },
           "note": "Year shown on both because they differ."
         }
@@ -89,7 +89,7 @@
   ],
   "detail_sections": [
     {
-      "title": "Highlighted Examples",
+      "title": "More Examples",
       "cases": [
         {
           "title": "Server time — single moment",
@@ -97,23 +97,28 @@
           "args": { "start": "2026-03-29 12:00" }
         },
         {
-          "title": "Absolute time — maintenance window",
-          "note": "UTC+8 offset anchors a real-world moment. JS converts to the viewer's local time and shows it per server.",
+          "title": "Absolute timespan",
+          "note": "UTC+8 offset anchors a real-world moment. JS converts to the viewer's local time and shows it per server. An absolute timespan is often a maintenance window affecting all servers at once.",
           "args": { "start": "2026-03-12 06:00 +8", "end": "2026-03-12 12:00 +8" }
+        },
+        {
+          "title": "Non-zero minutes",
+          "note": "No, it's not very exciting.",
+          "args": { "start": "2026-03-29 11:59" }
         },
         {
           "title": "Raw text override",
           "note": "Inline text stays exactly as written. The tooltip is still built from the datetime parameters.",
-          "args": { "start": "2026-03-12 12:00 +8", "end": "2026-03-29 04:00", "raw": "After maintenance until Mar 29 reset" }
+          "args": { "start": "2026-03-12 12:00 +8", "end": "2026-03-29 04:00", "raw": "from maintenance until Mar 29 reset" }
         },
         {
           "title": "Soft error — unparseable date",
-          "note": "Start is present but cannot be parsed. The raw input is shown as-is so the page is still readable. Adds the error tracking category.",
+          "note": "Start is present but cannot be parsed. The raw input is shown as-is so the page is still readable. Adds a MediaWiki error tracking category.",
           "args": { "start": "Early April (TBD)" }
         },
         {
           "title": "Hard error — no start time",
-          "note": "Missing required parameter. Shown in red and tracked in a MediaWiki error category.",
+          "note": "Missing required parameter. Shown in red and tracked in the error category.",
           "args": {}
         }
       ]
@@ -122,18 +127,13 @@
       "title": "Edge Cases",
       "cases": [
         {
-          "title": "Non-zero minutes",
-          "note": "No, it's not very exciting.",
-          "args": { "start": "2026-03-29 11:59" }
-        },
-        {
           "title": "Filtered to Americas, mixed definitions",
           "note": "Start is absolute (UTC-5); end is server-relative with no offset. The filter limits the tooltip to the Americas server. Both TZ labels appear inline because the types differ.",
           "args": { "start": "2026-03-11 17:00 -5", "end": "2026-03-11 23:00", "server": "americas" }
         },
         {
           "title": "Same-day in source TZ",
-          "note": "The range is one calendar day in UTC+8 but viewers in the Americas see it cross into the next local date.",
+          "note": "The range is one calendar day in China (UTC+8) but viewers in the Americas see it cross into the next local date.",
           "args": { "start": "2026-03-15 10:00 +8", "end": "2026-03-15 14:00 +8" }
         },
         {
@@ -143,7 +143,7 @@
         },
         {
           "title": "US DST ends during the displayed span",
-          "note": "In a U.S. browser timezone that observes DST, the localized inline output may need different timezone labels on each side of the span, such as EDT then EST.",
+          "note": "In a U.S. timezone that observes DST, the localized inline output may need different timezone labels on each side of the span, such as EDT then EST.",
           "args": { "start": "2026-11-01 00:30 -4", "end": "2026-11-01 02:30 -5" }
         }
       ]
