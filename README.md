@@ -27,18 +27,21 @@ Example tooltip:
 * Specifying a single server for the tooltip instead of showing all of them
 * Specifying alternate text to display inline.
   * This could be used to provide a tooltip on patch notes where you want the displayed text to match the official description of the time.
-* Basic defaults to display when Javascript is disabled
+* Basic default text to display when Javascript is disabled
 * Basic semantic HTML classes to enable custom css
 * Auto-deduplicating things like the year or day when it is the same for the whole timespan in the user's timezone.
 * Provides [[Category:Pages with InlineDateTime errors]]
+
+**Known issues:**
+* The no-JS fallback text is not styled and doesn't deduplicate as well as the JS code.
 
 **Not supported:**
 * Languages other than English
 * Time formatting other than American
 * Events that occur at unrelated times on different servers
-  * But: you can use the single server capability to list them separately inline.
+  * But: you can use the single server capability to list them separately inline with multiple template invocations.
 * Live changes to the user's timezone after page load
-* No user settings: keeping it simple and avoiding confusion
+* User settings: keeping it simple and avoiding confusion
   * Can't display a specific server's info inline
   * Can't hide a server's info in the tooltip
     * The tooltip may be unwieldy if displaying a large number of servers
@@ -46,8 +49,14 @@ Example tooltip:
 * Force year to be displayed, even for the current year
   * But: you can use a raw text override
 * Disable tooltip (other than by disabling js)
-* No support for showing seconds. We assume everything is minute-aligned.
-* No tooling for locating date-like entries on pages that haven't been wrapped in the template.
+* Support for showing seconds. We assume everything is minute-aligned.
+* Tooling for locating date-like entries on pages that haven't been wrapped in the template.
+* PHP time parsing `{{time:}}`
+  * This is intentional to prevent silent errors. If someone writes something like "from maintenance until Mar 29 reset" would likely be collapsed to March 29 of either the current or next year. If there's a good reason to support "second tuesday of last month + 10 seconds" then this could change.
+  * Did you know that "last month's second tuesday" is *false* but "second tuesday of last month" is an actual time? Why are "+2 hours", "+2 hrs", and "+2 hourss" all different? So PHP can behave in ways that aren't always obvious.
+  * By default PHP will be using the wiki server's timezone, which isn't desirable when the gadget needs to be told that a time doesn't have a specific timezone.
+  * There's probably a way to make this work well enough in most cases, but it hasn't been a focus.
+  * This would require the ParserFunctions extension, but it's already on most wiki installs, so this wouldn't be a large requirement.
 
 
 ## Install and Configure

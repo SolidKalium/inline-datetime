@@ -3,7 +3,7 @@
 ## Now
 
 * Improve lua fallback to be closer to the JS?
-* Fix tt overflow bug on test page
+  * Include style classes?
 * verify usage documentation is aligned (specs, wiki doc page, visual test page)
 * Test the export file
   * How will MediaWiki handle "duplicate" pages?

@@ -98,9 +98,12 @@
         };
     }
 
-    function getFormatter(cacheKey, options) {
+    function getFormatter(cacheKey, options, locale) {
         if (!FORMATTER_CACHE[cacheKey]) {
-            FORMATTER_CACHE[cacheKey] = new Intl.DateTimeFormat('en-US', options);
+            FORMATTER_CACHE[cacheKey] = new Intl.DateTimeFormat(
+                arguments.length < 3 ? 'en-US' : locale,
+                options
+            );
         }
         return FORMATTER_CACHE[cacheKey];
     }
@@ -124,6 +127,17 @@
             }
         }
 
+        // Get timezone abbreviation using the browser's locale so users see
+        // locale-appropriate short names (e.g. "BST" for en-GB, not "GMT+1").
+        var tzFormatter = getFormatter('tz|' + timeZone, {
+            timeZone: timeZone,
+            timeZoneName: 'short'
+        }, undefined);
+        var tzParts = tzFormatter.formatToParts(new Date(utcMs));
+        var tzName = values.timeZoneName || '';
+        for (var j = 0; j < tzParts.length; j++) {
+            if (tzParts[j].type === 'timeZoneName') { tzName = tzParts[j].value; break; }
+        }
         return {
             month: values.month,
             timeCore: values.hour + ':' + values.minute,
@@ -131,7 +145,7 @@
             year: parseInt(values.year, 10),
             monthIdx: MONTH_INDEX[values.month],
             day: parseInt(values.day, 10),
-            tzLabel: values.timeZoneName || ''
+            tzLabel: tzName
         };
     }
 
@@ -190,7 +204,7 @@
         var offsetMin = -now.getTimezoneOffset();
         var abbr = '';
         try {
-            var parts = new Intl.DateTimeFormat('en-US', { timeZoneName: 'short' })
+            var parts = new Intl.DateTimeFormat(undefined, { timeZoneName: 'short' })
                 .formatToParts(now);
             for (var i = 0; i < parts.length; i++) {
                 if (parts[i].type === 'timeZoneName') {
