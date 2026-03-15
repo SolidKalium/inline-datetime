@@ -1,0 +1,36 @@
+# Minimal config for local MediaWiki integration testing.
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: mediawiki
+      MARIADB_USER: mediawiki
+      MARIADB_PASSWORD: mediawiki
+      MARIADB_ROOT_PASSWORD: rootpassword
+    volumes:
+      - mediawiki_db_data:/var/lib/mysql
+
+  mediawiki:
+    build:
+      context: .
+      dockerfile: test/docker/mediawiki.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      MEDIAWIKI_DB_TYPE: mysql
+      MEDIAWIKI_DB_HOST: db
+      MEDIAWIKI_DB_NAME: mediawiki
+      MEDIAWIKI_DB_USER: mediawiki
+      MEDIAWIKI_DB_PASSWORD: mediawiki
+    volumes:
+      - mediawiki_images:/var/www/html/images
+      - ./test/docker/LocalSettings.php:/var/www/html/LocalSettings.php:ro
+      - ./dist:/imports:ro
+
+volumes:
+  mediawiki_db_data:
+  mediawiki_images:

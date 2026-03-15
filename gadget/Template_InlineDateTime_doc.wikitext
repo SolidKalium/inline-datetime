@@ -1,6 +1,6 @@
 == Usage ==
 
-<code><nowiki>{{dt}}</nowiki></code> displays an inline datetime or date range with automatic timezone conversion for the reader. Times are shown with a tooltip providing conversions to the reader's local time and/or server times.
+<code><nowiki>{{InlineDateTime}}</nowiki></code> (or the short alias <code><nowiki>{{IDT}}</nowiki></code>) displays an inline datetime or date range with automatic timezone conversion for the reader. Times are shown with a tooltip providing conversions to the reader's local time and/or server times.
 
 === Parameters ===
 
@@ -8,7 +8,7 @@
 |-
 ! Parameter !! Required !! Description
 |-
-| <code>start</code> or <code>1</code> || Yes (unless <code>raw</code> is set) || Start datetime in <code>YYYY-MM-DD HH:MM</code> format. Append a UTC offset (<code>+8</code>, <code>-5</code>, <code>+05:30</code>) for absolute times. Omit the offset for server time.
+| <code>start</code> or <code>1</code> || Yes || Start datetime in <code>YYYY-MM-DD HH:MM</code> format. Append a UTC offset (<code>+8</code>, <code>-5</code>, <code>+05:30</code>, <code>UTC+8</code>, <code>GMT-5</code>) for absolute times. Omit the offset for server time.
 |-
 | <code>end</code> or <code>2</code> || No || End datetime, same format as start. If the date matches start, only the time portion is shown in the fallback display.
 |-
@@ -37,22 +37,28 @@
 === Examples ===
 
 '''Server time range (most common):'''
-<pre>{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}</pre>
+<pre>{{InlineDateTime|start=2026-03-12 12:00|end=2026-03-29 12:00}}</pre>
 
 '''Absolute time (maintenance window):'''
-<pre>{{dt|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8}}</pre>
+<pre>{{InlineDateTime|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8}}</pre>
 
 '''Single point in time:'''
-<pre>{{dt|start=2026-03-12 12:00}}</pre>
+<pre>{{InlineDateTime|start=2026-03-12 12:00}}</pre>
 
 '''With server filter:'''
-<pre>{{dt|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8|server=asia}}</pre>
+<pre>{{InlineDateTime|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8|server=asia}}</pre>
 
 '''With raw text (for dev notes):'''
-<pre>{{dt|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8|raw=Mar. 12, 2026 at 06:00 - Mar. 12, 2026 at 12:00 (UTC+8)}}</pre>
+<pre>{{InlineDateTime|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8|raw=Mar. 12, 2026 at 06:00 - Mar. 12, 2026 at 12:00 (UTC+8)}}</pre>
+
+The short alias <code><nowiki>{{IDT}}</nowiki></code> works identically if installed.
 
 === No-JavaScript fallback ===
 
 Without JavaScript, the template displays dates in a readable format with the timezone context (either the UTC offset or "server time"). Tooltips are not available without JavaScript.
+
+=== Error handling ===
+
+If <code>start</code> is missing or blank, the template renders a visible hard error in red. If <code>start</code> or <code>end</code> is present but cannot be parsed, a soft error is shown with the original text instead. Both states add the page to [[:Category:Pages with InlineDateTime errors]] for editor review.
 
 [[Category:InlineDateTime templates]]
