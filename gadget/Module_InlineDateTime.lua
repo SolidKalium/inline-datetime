@@ -39,11 +39,19 @@ local function parseDatetime(s)
 
     local result = {}
 
-    -- Try to extract offset at end: +8, -5, +05:30, -05:00, etc.
-    local base, sign, offset = s:match('^(.-)%s+([%+%-])(%d+:?%d*)$')
-    if base and sign and offset then
-        result.tz = sign .. offset
-        s = mw.text.trim(base)
+    -- Try to extract offset at end: +8, -5, +05:30, -05:00, UTC+8, GMT-5, etc.
+    -- Split off the last whitespace-delimited token, strip an optional UTC/GMT
+    -- prefix (case-insensitive), then match sign + digits.
+    local base, tz_token = s:match('^(.-)%s+(%S+)$')
+    if base and tz_token then
+        local stripped = tz_token:match('^[Uu][Tt][Cc](.+)$')
+                      or tz_token:match('^[Gg][Mm][Tt](.+)$')
+                      or tz_token
+        local sign, offset = stripped:match('^([%+%-])(%d+:?%d*)$')
+        if sign and offset then
+            result.tz = sign .. offset
+            s = mw.text.trim(base)
+        end
     end
 
     -- Parse date and time from remaining string

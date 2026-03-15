@@ -145,6 +145,11 @@
           "title": "US DST ends during the displayed span",
           "note": "In a U.S. timezone that observes DST, the localized inline output may need different timezone labels on each side of the span, such as EDT then EST.",
           "args": { "start": "2026-11-01 00:30 -4", "end": "2026-11-01 02:30 -5" }
+        },
+        {
+          "title": "Partial hour offset",
+          "note": "The UTC offset includes a half hour. And the acceptance of a GMT or UTC prefix is demonstrated.",
+          "args": { "start": "2026-07-01 14:30 GMT-05:30"}
         }
       ]
     }

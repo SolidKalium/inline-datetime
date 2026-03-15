@@ -108,6 +108,20 @@ run('valid: offset with minutes (+5:30)',
     { start = '2026-03-12 06:00 +5:30' },
     'data-dt-start="2026-03-12T06:00+05:30"')
 
+run('valid: UTC prefix accepted (UTC+8)',
+    { start = '2026-03-12 06:00 UTC+8' },
+    'data-dt-start="2026-03-12T06:00+08:00"',
+    'data-dt-start-tz="+8"')
+
+run('valid: GMT prefix accepted (GMT-5)',
+    { start = '2026-03-12 06:00 GMT-5' },
+    'data-dt-start="2026-03-12T06:00-05:00"',
+    'data-dt-start-tz="-5"')
+
+run('valid: lowercase utc prefix accepted',
+    { start = '2026-03-12 06:00 utc+8' },
+    'data-dt-start="2026-03-12T06:00+08:00"')
+
 run('valid: positional arg [1]',
     { [1] = '2026-03-12 06:00 +8' },
     'data-dt-start="2026-03-12T06:00+08:00"')

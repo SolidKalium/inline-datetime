@@ -3,18 +3,21 @@
 For features included and not included, see the main [README.md](README.md#features)
 
 ## Parameters
-Format: `{{dt|start=YYYY-MM-DD HH:MM|end=YYYY-MM-DD HH:MM OFFSET}}`
+Format: `{{dt|start=|end=|server=|raw=}}`
 
 All parameters are optional except `start`/`1`.
 
 * `start`/`1` and `end`/`2`: start and end times
+  * Format: `YYYY-MM-DD HH:MM [OFFSET]`
+    * Use a 24 hour clock ('13:00' instead of '01:00 PM')
   * Kinds of time (input)
     * Absolute time: a single moment affecting all servers simultaneously
-      * A UTC offset like "+8" or "-5" is specified at the end of the string
+      * A UTC offset like "+8" or "-5" is specified at the end of the string. You can also use formats like "UTC+8" or "GMT-05:30".
     * Server time: each server is affected when this is the server's local time
-      * No offset is specified *or* the offset is "server"
-* `server`: the tooltip will only list the specified server. Omit for all servers to be shown.
-* `raw`: text to show inline instead of the auto-formatted date time. JS will still build a tooltip from the start/end values.
+      * No offset is specified on the string.
+    * Invalid time: if `start` or `end` can't be parsed, they are both output as-is, no tooltip will generate, and an error category is added to the page.
+* `server`: the tooltip will only list the specified server. Omit for all servers to be shown. The value must match a key defined in the gadget config.
+* `raw`: text to show inline instead of the auto-formatted date time. If enabled, JS will still build a tooltip from the start/end values.
 
 ## Output
 

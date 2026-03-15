@@ -8,13 +8,7 @@
 * Test the export file
   * How will MediaWiki handle "duplicate" pages?
   * Document easy docker setup for this
-* Undefined behavior (document the results)
-  * What actually happens when the language isn't english? Does the i18n date give non-english month names?
 * audit code for readability and obviousness
-  * Maybe do a little work to make styling and regional time formats be better supported?
-  * Don't force en-us for formatting? Or at least not for getting a timezone short name.
-  * What timezone formats are supported as inputs? +8, UTC+8, etc? Note in spec.
-  * Should we be minimizing the output?
 
 ## Later
 
@@ -22,3 +16,17 @@
   * Support enter-your-own call to lua?
     * Would need WASM Lua. No official Scribunto or Lua 5.1 WASM, but wasmoon (Lua 5.4) and Fengari (Lua 5.3) exist.
 * Support a custom separator word, like 'to' or 'until'
+* Support additional locale adjustments. This would still assume an English wiki that shouldn't mix and match month names or other text.
+  * day month year (Europe)
+    * Duplicate month: `1 Mar, 13:00 – 5 Mar, 16:00 EDT`
+    * Deduped month: `1–5 March, 13:00 – 16:00 EDT`
+      * Note removed spacing on date range and long month name
+      * Might be "too aggressive" at trying to save space
+  * year month day (Asia)
+    * Duplicate month: `Mar 1, 13:00 – Mar 5, 16:00 EDT`
+    * Deduped month: `Mar 1, 13:00 – 5, 16:00 EDT`
+      * This might actually feel and read naturally for these visitors
+  * Can detect order preference in visitor's locale's time format
+    * Detect order by which is first: day, month, or year
+    * Detect 12 or 24 hour format
+  * Could support a gadget preference for order and 12 vs 24 hour.
