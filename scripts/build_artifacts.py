@@ -20,6 +20,7 @@ TEST_CSS_MARKER = "/* BUILD:INLINE-DATETIME-CSS */"
 TEST_JS_MARKER = "/* BUILD:INLINE-DATETIME-JS */"
 TEST_CASES_INTERACTIVE_MARKER = "<!-- BUILD:TEST-CASES-INTERACTIVE -->"
 TEST_CASES_FALLBACK_MARKER = "<!-- BUILD:TEST-CASES-FALLBACK -->"
+TEST_CASES_DETAIL_MARKER = "<!-- BUILD:TEST-CASES-DETAIL -->"
 
 EXPORT_PAGES = [
     {
@@ -218,11 +219,67 @@ def render_test_cases() -> tuple[str, str]:
     return "\n".join(interactive).rstrip(), "\n".join(fallback).rstrip()
 
 
+def mw_code_from_args(args: dict) -> str:
+    """Build a {{dt|...}} template call string from an args dict."""
+    parts = ["{{dt"]
+    for k, v in args.items():
+        parts.append(f"|{k}={v}")
+    parts.append("}}")
+    return "".join(parts)
+
+
+def render_detail_case(case: dict) -> str:
+    lua_span, lua_text = render_via_lua(case.get("args", {}))
+    title = case.get("title", "")
+    note = case.get("note", "")
+    code = case.get("code") or mw_code_from_args(case.get("args", {}))
+
+    header_parts = []
+    if title:
+        header_parts.append(f"<strong>{html_escape(title)}</strong>")
+    if note:
+        sep = "<br>" if title else ""
+        header_parts.append(f'{sep}<span class="note">{html_escape(note)}</span>')
+    header_html = "".join(header_parts)
+
+    return "\n".join([
+        '<div class="dt-detail-card">',
+        f'    <div class="dt-detail-cell dt-detail-header">{header_html}</div>',
+        '    <div class="dt-detail-cell dt-detail-code">',
+        '        <div class="dt-detail-label">Template</div>',
+        f'        <code>{html_escape(code)}</code>',
+        '    </div>',
+        '    <div class="dt-detail-cell dt-detail-js">',
+        '        <div class="dt-detail-label">With JS</div>',
+        f'        {lua_span}',
+        '    </div>',
+        '    <div class="dt-detail-cell dt-detail-nojs">',
+        '        <div class="dt-detail-label">Without JS</div>',
+        f'        {lua_span.replace("dt-inline", "dt-nojs")}',
+        '    </div>',
+        '</div>',
+    ])
+
+
+def render_detail_cases() -> str:
+    data = json.loads(read_text(TEST_CASES))
+    parts: list[str] = []
+    for section in data.get("detail_sections", []):
+        heading = section.get("title", "")
+        if heading:
+            parts.append(f"<h2>{html_escape(heading)}</h2>")
+        for case in section.get("cases", []):
+            parts.append(render_detail_case(case))
+        parts.append("")
+    return "\n".join(parts).rstrip()
+
+
 def build_test_page(dist_dir: Path) -> Path:
     template = read_text(TEST_TEMPLATE)
     css = indent_block(read_text(ROOT / "gadget" / "inline-datetime.css").rstrip(), "        ")
     js = indent_block(read_text(ROOT / "gadget" / "inline-datetime.js").rstrip(), "    ")
     interactive_cases, fallback_cases = render_test_cases()
+    detail_cases = render_detail_cases()
     test_output = dist_dir / "index.html"
     legacy_output = dist_dir / "test.html"
 
@@ -232,6 +289,7 @@ def build_test_page(dist_dir: Path) -> Path:
         .replace(TEST_JS_MARKER, js)
         .replace(TEST_CASES_INTERACTIVE_MARKER, interactive_cases)
         .replace(TEST_CASES_FALLBACK_MARKER, fallback_cases)
+        .replace(TEST_CASES_DETAIL_MARKER, detail_cases)
     )
     write_text(test_output, output + "\n")
     if legacy_output.exists():

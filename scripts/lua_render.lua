@@ -13,4 +13,7 @@ for i = 1, #arg do
     if key then args[key] = val end
 end
 
-io.write(p.main(makeFrame(args)))
+local result = p.main(makeFrame(args))
+-- Strip any trailing wikitext (e.g. [[Category:...]]) appended after the span
+result = result:match('^(.-</span>)') or result
+io.write(result)

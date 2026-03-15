@@ -6,6 +6,7 @@
         {
           "title": "Range, different dates",
           "description_before": "Combat Drills for Tangtang is available from",
+          "description_after": ".",
           "args": { "start": "2026-03-12 12:00", "end": "2026-03-29 12:00" },
           "code": "{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}",
           "note": "Inline should show \"(server)\" once at end. Tooltip shows your local time per server."
@@ -13,12 +14,8 @@
         {
           "title": "Single time",
           "description_before": "The Red Knight becomes available at",
+          "description_after": ", then you'll have 72 hours to challenge her before she retreats.",
           "args": { "start": "2026-03-29 12:00" }
-        },
-        {
-          "title": "Non-zero minutes",
-          "description_before": "Event ends at",
-          "args": { "start": "2026-03-29 11:59" }
         }
       ]
     },
@@ -28,6 +25,7 @@
         {
           "title": "Maintenance window (UTC+8)",
           "description_before": "Scheduled maintenance:",
+          "description_after": ". All game services will be unavailable during this window.",
           "args": { "start": "2026-03-12 06:00 +8", "end": "2026-03-12 12:00 +8" },
           "note": "Inline shows your local time with your TZ once at end of range. Tooltip shows each server's wall-clock."
         },
@@ -35,11 +33,6 @@
           "title": "Filtered to Asia",
           "description_before": "Asia maintenance:",
           "args": { "start": "2026-03-12 06:00 +8", "end": "2026-03-12 12:00 +8", "server": "asia" }
-        },
-        {
-          "title": "Filtered to Americas",
-          "description_before": "Americas maintenance:",
-          "args": { "start": "2026-03-11 17:00 -5", "end": "2026-03-11 23:00 -5", "server": "americas" }
         }
       ]
     },
@@ -87,29 +80,71 @@
         {
           "title": "Cross-year range (Dec 2025 - Jan 2026)",
           "description_before": "Holiday event:",
+          "description_after": " Special decorations and limited quests are available across all regions during this period.",
           "args": { "start": "2025-12-20 12:00", "end": "2026-01-10 04:00" },
           "note": "Year shown on both because they differ."
         }
       ]
-    },
+    }
+  ],
+  "detail_sections": [
     {
-      "title": "Edge cases",
+      "title": "Highlighted Examples",
       "cases": [
         {
-          "title": "Same-day in source TZ (may cross midnight in your TZ)",
-          "description_before": "Flash sale:",
+          "title": "Server time — single moment",
+          "note": "No timezone offset. JS converts to the viewer's local wall-clock time per server.",
+          "args": { "start": "2026-03-29 12:00" }
+        },
+        {
+          "title": "Absolute time — maintenance window",
+          "note": "UTC+8 offset anchors a real-world moment. JS converts to the viewer's local time and shows it per server.",
+          "args": { "start": "2026-03-12 06:00 +8", "end": "2026-03-12 12:00 +8" }
+        },
+        {
+          "title": "Raw text override",
+          "note": "Inline text stays exactly as written. The tooltip is still built from the datetime parameters.",
+          "args": { "start": "2026-03-12 12:00 +8", "end": "2026-03-29 04:00", "raw": "After maintenance until Mar 29 reset" }
+        },
+        {
+          "title": "Soft error — unparseable date",
+          "note": "Start is present but cannot be parsed. The raw input is shown as-is so the page is still readable. Adds the error tracking category.",
+          "args": { "start": "Early April (TBD)" }
+        },
+        {
+          "title": "Hard error — no start time",
+          "note": "Missing required parameter. Shown in red and tracked in a MediaWiki error category.",
+          "args": {}
+        }
+      ]
+    },
+    {
+      "title": "Edge Cases",
+      "cases": [
+        {
+          "title": "Non-zero minutes",
+          "note": "No, it's not very exciting.",
+          "args": { "start": "2026-03-29 11:59" }
+        },
+        {
+          "title": "Filtered to Americas, mixed definitions",
+          "note": "Start is absolute (UTC-5); end is server-relative with no offset. The filter limits the tooltip to the Americas server. Both TZ labels appear inline because the types differ.",
+          "args": { "start": "2026-03-11 17:00 -5", "end": "2026-03-11 23:00", "server": "americas" }
+        },
+        {
+          "title": "Same-day in source TZ",
+          "note": "The range is one calendar day in UTC+8 but viewers in the Americas see it cross into the next local date.",
           "args": { "start": "2026-03-15 10:00 +8", "end": "2026-03-15 14:00 +8" }
         },
         {
           "title": "Crosses midnight in source TZ",
-          "description_before": "Late-night event:",
+          "note": "The range spans two calendar days in China. One calendar day in Americas.",
           "args": { "start": "2026-03-12 22:00 +8", "end": "2026-03-13 06:00 +8" }
         },
         {
           "title": "US DST ends during the displayed span",
-          "description_before": "Overnight maintenance around the fall clock change:",
-          "args": { "start": "2026-11-01 00:30 -4", "end": "2026-11-01 02:30 -5" },
-          "note": "In a U.S. browser timezone that observes DST, the localized inline output may need different timezone labels on each side of the span, such as EDT then EST."
+          "note": "In a U.S. browser timezone that observes DST, the localized inline output may need different timezone labels on each side of the span, such as EDT then EST.",
+          "args": { "start": "2026-11-01 00:30 -4", "end": "2026-11-01 02:30 -5" }
         }
       ]
     }

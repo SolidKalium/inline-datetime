@@ -126,6 +126,46 @@
         }
         .test-view[hidden] { display: none; }
 
+        /* ── Detail card layout ──────────────────────────────────────────────── */
+        .dt-detail-card {
+            border: 1px solid var(--page-border);
+            border-radius: 4px;
+            margin: 1.5em 0;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        @media (max-width: 560px) {
+            .dt-detail-card { grid-template-columns: 1fr; }
+        }
+        .dt-detail-cell {
+            padding: 0.75em 1em;
+        }
+        .dt-detail-header {
+            background: var(--example-bg);
+            border-right: 1px solid var(--page-border);
+            border-bottom: 1px solid var(--page-border);
+        }
+        .dt-detail-code {
+            background: var(--code-bg);
+            border-bottom: 1px solid var(--page-border);
+            word-break: break-all;
+            font-size: 0.9em;
+        }
+        .dt-detail-js {
+            border-right: 1px solid var(--page-border);
+        }
+        .dt-detail-nojs {
+            background: var(--example-bg);
+        }
+        .dt-detail-label {
+            font-size: 0.75em;
+            color: var(--page-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 0.4em;
+        }
+
         /* BUILD:INLINE-DATETIME-CSS */
     </style>
 </head>
@@ -178,6 +218,10 @@
 <!-- BUILD:TEST-CASES-INTERACTIVE -->
 </div>
 
+<div id="test-view-detail">
+<!-- BUILD:TEST-CASES-DETAIL -->
+</div>
+
 <script>
 /* BUILD:INLINE-DATETIME-JS */
 </script>
@@ -193,16 +237,21 @@
         var tzDisplay = document.getElementById('tz-display');
 
         function cleanupInteractivePreview() {
-            var elements = interactiveView.querySelectorAll('.dt-inline');
-            for (var i = 0; i < elements.length; i++) {
-                var el = elements[i];
-                var tooltips = el.querySelectorAll('.dt-tooltip');
-                for (var j = 0; j < tooltips.length; j++) {
-                    tooltips[j].remove();
+            var containers = [interactiveView, document.getElementById('test-view-detail')];
+            for (var c = 0; c < containers.length; c++) {
+                if (!containers[c]) { continue; }
+                var elements = containers[c].querySelectorAll('.dt-inline');
+                for (var i = 0; i < elements.length; i++) {
+                    var el = elements[i];
+                    var tooltips = el.querySelectorAll('.dt-tooltip');
+                    for (var j = 0; j < tooltips.length; j++) {
+                        tooltips[j].remove();
+                    }
+                    el.classList.remove('dt-handled', 'dt-has-tooltip', 'dt-open');
+                    el.removeAttribute('tabindex');
+                    el.removeAttribute('role');
+                    el.removeAttribute('aria-expanded');
                 }
-                el.classList.remove('dt-handled');
-                el.classList.remove('dt-has-tooltip');
-                el.removeAttribute('tabindex');
             }
         }
 
