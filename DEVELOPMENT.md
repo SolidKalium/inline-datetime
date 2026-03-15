@@ -32,6 +32,15 @@ Edit `test/test.template.html` if you want to change the demo page structure or 
 
 Do not manually edit `dist/index.html`. Rebuild it from the template instead.
 
+## Test cases workflow
+
+* Install luajit
+  * mac/linux: `brew install luajit`
+* Run test cases: `luajit test/run_lua_tests.lua`
+* Test limitations
+  * Scribunto blocks many `os.*` and `io.*` functions, but the tests don't enforce this. Scribunto does allow `os.date`, which is currently used.
+  * The script uses a few minimal shims to simulate functions provided by MediaWiki.
+
 ## MediaWiki import workflow
 
 `dist/mediawiki-export.xml` can be imported with MediaWiki's import tools.

@@ -4,7 +4,6 @@
 
 * verify usage documentation is aligned (specs, wiki doc page, visual test page)
 * Test the export file
-  * Figure out what MediaWiki:Gadgets-definition could look like if auto-imported.
   * How will MediaWiki handle "duplicate" pages?
   * Document easy docker setup for this
 * Undefined behavior (document the results)
@@ -21,6 +20,5 @@
   * Support enter-your-own call to lua? (may need wasm Lua...)
   * rely on lua (either at build time or in the browser) instead of hardcoded lua outputs
     * Could have build-time lua be an optional step with cached output json
-    * Would need shims for mw stuff
   * Need test cases to be a little more strategic? Maybe show js, nojs, and wiki all together? Not sure we really need a test case for every possible situation. It would be overwhelming.
     * Add test cases for bad and missing inputs
