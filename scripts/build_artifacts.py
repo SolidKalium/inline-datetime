@@ -306,7 +306,7 @@ def export_page_xml(page: dict, timestamp: str, revision_id: int) -> str:
         f"    <revision>\n"
         f"      <id>{revision_id}</id>\n"
         f"      <timestamp>{timestamp}</timestamp>\n"
-        "      <contributor><username>GitHub Build</username></contributor>\n"
+        "      <contributor><username>Inline DateTime Gadget export</username></contributor>\n"
         '      <comment>Generated export artifact</comment>\n'
         f"      <text xml:space=\"preserve\">{escape(text)}</text>\n"
         "    </revision>\n"
