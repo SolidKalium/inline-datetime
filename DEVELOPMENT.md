@@ -2,6 +2,16 @@
 
 This project has a small local build step for generating distributable artifacts without requiring a MediaWiki instance.
 
+Documentation exists in three places:
+* [README.md](README.md), [specifications.md](specifications.md), and [DEVELOPMENT.md](DEVELOPMENT.md)
+* [Template:InlineDateTime/doc](gadget/Template_InlineDateTime_doc.wikitext)
+* The demo page
+
+Testing has three available parts:
+* The demo page
+* Lua test suite
+* Manual integration testing with a prepared docker file
+
 ## Build artifacts
 
 Run:

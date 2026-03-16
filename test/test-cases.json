@@ -8,7 +8,7 @@
           "description_before": "Combat Drills for Tangtang is available from",
           "description_after": ".",
           "args": { "start": "2026-03-12 12:00", "end": "2026-03-29 12:00" },
-          "code": "{{dt|start=2026-03-12 12:00|end=2026-03-29 12:00}}",
+          "code": "{{IDT|start=2026-03-12 12:00|end=2026-03-29 12:00}}",
           "note": "Inline text shows \"(server)\" once at the end. Tooltip shows your local time per server."
         },
         {
@@ -57,14 +57,14 @@
             "end": "2026-03-29 04:00",
             "raw": "After maintenance until Mar 29 reset"
           },
-          "code": "{{dt|start=2026-03-12 12:00 +8|end=2026-03-29 04:00|raw=After maintenance until Mar 29 reset}}",
+          "code": "{{IDT|start=2026-03-12 12:00 +8|end=2026-03-29 04:00|raw=After maintenance until Mar 29 reset}}",
           "note": "Inline text stays exactly as provided. Tooltip should still be built from the datetime parameters."
         },
         {
           "title": "Raw text + single time + server filter",
           "description_before": "Asia-only schedule note:",
           "args": { "start": "2026-03-29 04:00", "server": "asia", "raw": "Asia server daily reset" },
-          "code": "{{dt|start=2026-03-29 04:00|server=asia|raw=Asia server daily reset}}",
+          "code": "{{IDT|start=2026-03-29 04:00|server=asia|raw=Asia server daily reset}}",
           "note": "Inline text should remain raw, and the tooltip should be limited to the specified server."
         }
       ]

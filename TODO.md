@@ -6,6 +6,7 @@
   * Include style classes?
     * This could interfere with the current no-JS demo
 * audit code for readability and obviousness
+* Re-organize "supported" and "not-supported" notes in README
 
 ## Later
 

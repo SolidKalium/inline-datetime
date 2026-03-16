@@ -86,6 +86,21 @@ run('soft error: html entities escaped in start input',
     'dt-error-soft',
     '&lt;script&gt;xss&lt;/script&gt;')
 
+run('soft error: html entities escaped in end input',
+    { start = '2026-03-12 06:00', ['end'] = '<script>xss</script>' },
+    'dt-error-soft',
+    '&lt;script&gt;xss&lt;/script&gt;')
+
+run('soft error: html entities escaped in raw input',
+    { start = 'bad-date', raw = '<script>xss</script>' },
+    'dt-error-soft',
+    '&lt;script&gt;xss&lt;/script&gt;')
+
+run('valid: html entities escaped in raw input',
+    { start = '2026-03-12 06:00', raw = '<script>xss</script>' },
+    'class="dt-inline"',
+    '&lt;script&gt;xss&lt;/script&gt;')
+
 -- ── Valid output: data attributes ─────────────────────────────────────────────
 
 run('valid: server time emits correct attributes',

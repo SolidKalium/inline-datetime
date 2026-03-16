@@ -4,7 +4,7 @@ This is a Mediawiki gadget for game wikis with a few game servers in different t
 
 This gadget will format times and timespans as inline text with a tooltip (accessible on hover or tap) that translates the time to the user's local time. The information is kept minimal for compactness but expansion occurs as needed for precision.
 
-[Demo page](https://solidkalium.github.io/inline-datetime/)
+**[See our demo page!](https://solidkalium.github.io/inline-datetime/)**
 
 Example tooltip:
 
@@ -20,7 +20,7 @@ Example tooltip:
   * Single moment across servers (e.g. `04:00 +8`): usually server maintenance
     * Inline text: user's timezone
     * Tooltip: servers' timezones
-  * Same server time across servers (e.g. `04:00 server`): usually daily & weekly resets
+  * Same server time across servers (e.g. `04:00`): usually daily & weekly resets
     * Inline text: the server-relative time
     * Tooltip: when each server observes that time, according to the user's timezone
 * Single times or timespans (can mix and match date kinds)
@@ -30,10 +30,12 @@ Example tooltip:
 * Basic default text to display when Javascript is disabled
 * Basic semantic HTML classes to enable custom css
 * Auto-deduplicating things like the year or day when it is the same for the whole timespan in the user's timezone.
-* Provides [[Category:Pages with InlineDateTime errors]]
+* Dynamic content added via `mw.hook('wikipage.content')` is handled automatically
+* Provides `[[Category:Pages with InlineDateTime errors]]`
 
 **Known issues:**
 * The no-JS fallback text is not styled and doesn't deduplicate as well as the JS code.
+* The server agnostic description isn't moved into the tooltip when there is a raw text override.
 
 **Not supported:**
 * Languages other than English
@@ -50,6 +52,8 @@ Example tooltip:
   * But: you can use a raw text override
 * Disable tooltip (other than by disabling js)
 * Support for showing seconds. We assume everything is minute-aligned.
+* Support for entering days without hours and minutes.
+* Support for compact inline text that removes the hours and minutes but leaves them in the tooltip.
 * Tooling for locating date-like entries on pages that haven't been wrapped in the template.
 * PHP time parsing `{{time:}}`
   * This is intentional to prevent silent errors. If someone writes something like "from maintenance until Mar 29 reset" would likely be collapsed to March 29 of either the current or next year. If there's a good reason to support "second tuesday of last month + 10 seconds" then this could change.

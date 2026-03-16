@@ -101,6 +101,10 @@
     function getFormatter(cacheKey, options, locale) {
         if (!FORMATTER_CACHE[cacheKey]) {
             FORMATTER_CACHE[cacheKey] = new Intl.DateTimeFormat(
+                // Use arguments.length rather than `locale || 'en-US'` because
+                // passing explicit undefined still satisfies ||, so the browser
+                // locale would never be reached. Callers omit the argument for
+                // en-US and pass undefined for the browser's locale.
                 arguments.length < 3 ? 'en-US' : locale,
                 options
             );

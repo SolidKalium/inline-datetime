@@ -220,8 +220,8 @@ def render_test_cases() -> tuple[str, str]:
 
 
 def mw_code_from_args(args: dict) -> str:
-    """Build a {{dt|...}} template call string from an args dict."""
-    parts = ["{{dt"]
+    """Build a {{IDT|...}} template call string from an args dict."""
+    parts = ["{{IDT"]
     for k, v in args.items():
         parts.append(f"|{k}={v}")
     parts.append("}}")

@@ -93,6 +93,8 @@ local function formatFallback(parsed)
     local parts = {}
     table.insert(parts, monthStr .. ' ' .. d)
     -- Include year only if it's not the current year
+    -- '!' gives UTC time; the year may differ from local wiki time around UTC midnight
+    -- on Jan 1, but this is acceptable for a no-JS fallback.
     local currentYear = os.date('!%Y')
     if y ~= currentYear then
         table.insert(parts, y)
@@ -219,7 +221,7 @@ function p.main(frame)
 
     -- Assemble the span
     local attrStr = table.concat(dataAttrs, ' ')
-    return '<span class="dt-inline" ' .. attrStr .. '>' .. display .. '</span>'
+    return '<span class="dt-inline" ' .. attrStr .. '>' .. htmlEscape(display) .. '</span>'
 end
 
 return p
