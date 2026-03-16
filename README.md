@@ -88,11 +88,10 @@ This repository's export file includes:
 After importing the pages, add an entry to `MediaWiki:Gadgets-definition`. A typical entry looks like:
 
 ```mediawiki
-* inline-datetime[ResourceLoader|default|type=general]|Gadget-inline-datetime-config.js|Gadget-inline-datetime.js|Gadget-inline-datetime.css
+* inline-datetime[ResourceLoader|default|type=general]|inline-datetime-config.js|inline-datetime.js|inline-datetime.css
 ```
 
 Option notes:
-* `ResourceLoader` — registers the gadget as a ResourceLoader module for better performance and dependency support; remove this option if your wiki does not use ResourceLoader
 * `default` — enables the gadget for all users automatically; replace with `hidden` if you want it available but opt-in only
 * `type=general` — runs scripts in the page scope; required for this gadget to access the page DOM
 * The config file **must be listed before** the main JS file so it is executed first

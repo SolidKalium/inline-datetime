@@ -1,4 +1,4 @@
-{{#invoke:InlineDateTime|main}}<noinclude>
-{{documentation}}
+<includeonly>{{#invoke:InlineDateTime|main}}</includeonly><noinclude>
+{{/doc}}
 [[Category:InlineDateTime templates]]
 </noinclude>

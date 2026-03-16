@@ -1,1 +1,3 @@
-{{InlineDateTime|start={{{start|{{{1|}}}}}}|end={{{end|{{{2|}}}}}}|server={{{server|}}}|raw={{{raw|}}}}}
+<includeonly>{{InlineDateTime|start={{{start|{{{1|}}}}}}|end={{{end|{{{2|}}}}}}|server={{{server|}}}|raw={{{raw|}}}}}</includeonly><noinclude>
+Short alias for [[Template:InlineDateTime]].
+</noinclude>

@@ -60,7 +60,7 @@ To enable GitHub Pages: go to `Settings -> Pages` in the repository, then select
 ## Local MediaWiki testing
 
 For end-to-end testing in a real wiki environment, this repo includes a minimal `docker-compose.yml` for MediaWiki plus MariaDB.
-The MediaWiki container is built from `test/docker/mediawiki.Dockerfile`, which adds Lua 5.1 for Scribunto's `lua-standalone` engine.
+The MediaWiki container is built from `test/docker/mediawiki.Dockerfile`, which adds Lua 5.1 for Scribunto's `luastandalone` engine.
 
 Start it with:
 
@@ -84,16 +84,22 @@ http://localhost:8080
 Recommended workflow:
 1. Run `python3 scripts/build_artifacts.py` so the current export file exists in `dist/`.
 2. Start the stack with `docker compose up -d`.
+   * After first startup or after enabling/changing extension config in `LocalSettings.php`, run:
+
+   ```bash
+   docker compose exec mediawiki php maintenance/run.php update
+   ```
+
 3. Login with credentials admin / adminpassword. *The config does not expose the container to the internet and you shouldn't use these credentials if you do.*
 4. Import the generated export into the running wiki using one of these methods:
-   * In `Special:Import`, upload the local `dist/mediawiki-export.xml` file from your machine. Use any import prefix (e.g. "imported")
+   * In `Special:Import`, upload the local `dist/mediawiki-export.xml` file from your machine. Use any import prefix (e.g. "imported") for the edit logs.
    * Or import from inside the container with:
 
    ```bash
    docker compose exec mediawiki php maintenance/run.php importDump /imports/mediawiki-export.xml
    ```
 
-   * Note that these will clobber any existing pages, though undo will be available in the version history.
+   * Note that these will clobber any existing pages, though undo will be available in the version history. The import will not work correctly until Scribunto's install maintenance has run.
 
 5. Update `MediaWiki:Gadgets-definition` to load `MediaWiki:Gadget-inline-datetime.js` and `MediaWiki:Gadget-inline-datetime.css`.
 6. Optionally add `Template:IDT` manually if you want the short alias.
@@ -104,5 +110,5 @@ Notes:
 * `test/docker/LocalSettings.php` is committed as a local test-only configuration for this Docker setup. It should not be reused for production or public deployment.
 * The generated `dist/` directory is mounted read-only into the MediaWiki container at `/imports`.
 * `test/docker/LocalSettings.php` is mounted read-only into the MediaWiki container as `/var/www/html/LocalSettings.php`.
-* The MediaWiki image includes `lua5.1` so `wfLoadExtension( 'Scribunto' )` can use the `lua-standalone` engine from the committed test config.
+* The `mediawiki:1.43` image doesn't include Scribunto's bundled standalone Lua binary, so we install system lua5.1 and we have `test/docker/LocalSettings.php` explicitly point Scribunto at `/usr/bin/lua5.1`.
 * Uploaded wiki files live in a named Docker volume, so restarting the stack does not wipe images.

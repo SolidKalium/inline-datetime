@@ -1,6 +1,6 @@
 == Usage ==
 
-<code><nowiki>{{InlineDateTime}}</nowiki></code> (or the short alias <code><nowiki>{{IDT}}</nowiki></code>) displays an inline datetime or date range with automatic timezone conversion for the reader. Times are shown with a tooltip providing conversions to the reader's local time and/or server times.
+<code><nowiki>{{InlineDateTime}}</nowiki></code> (or the short alias <code><nowiki>{{InlineDateTime}}</nowiki></code>) displays an inline datetime or date range with automatic timezone conversion for the reader. Times are shown with a tooltip providing conversions to the reader's local time and/or server times.
 
 === Parameters ===
 
@@ -38,6 +38,7 @@
 
 '''Server time range (most common):'''
 <pre>{{InlineDateTime|start=2026-03-12 12:00|end=2026-03-29 12:00}}</pre>
+What it looks like: {{InlineDateTime|start=2026-03-12 12:00|end=2026-03-29 12:00}}
 
 '''Absolute time (maintenance window):'''
 <pre>{{InlineDateTime|start=2026-03-12 06:00 +8|end=2026-03-12 12:00 +8}}</pre>

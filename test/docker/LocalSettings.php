@@ -168,9 +168,10 @@ wfLoadExtension( 'MultimediaViewer' );
 wfLoadExtension( 'SyntaxHighlight_GeSHi' );
 wfLoadExtension( 'Scribunto' );
 $wgScribuntoDefaultEngine = 'luastandalone';
-$wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua5.1'; // TODO is this needed? If not, we can remove the build step that added it.
+// The MediaWiki Docker image used for local testing does not ship Scribunto's
+// standalone Lua binary, so this test setup uses system lua5.1 instead.
+$wgScribuntoEngineConf['luastandalone']['luaPath'] = '/usr/bin/lua5.1';
 $wgScribuntoEngineConf['luastandalone']['errorFile'] = '/tmp/scribunto.log';
-// $wgScribuntoEngineConf['lua-standalone']['luaPath'] = "$IP/extensions/Scribunto/includes/engines/LuaStandalone/binaries/lua5.1_linux_64_generic/lua";
 wfLoadExtension( 'CategoryTree' );
 wfLoadExtension( 'ReplaceText' );
 

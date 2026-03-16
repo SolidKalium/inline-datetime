@@ -4,10 +4,7 @@
 
 * Improve lua fallback to be closer to the JS?
   * Include style classes?
-* verify usage documentation is aligned (specs, wiki doc page, visual test page)
-* Test the export file
-  * How will MediaWiki handle "duplicate" pages?
-  * Document easy docker setup for this
+    * This could interfere with the current no-JS demo
 * audit code for readability and obviousness
 
 ## Later
