@@ -133,8 +133,8 @@
         },
         {
           "title": "Same-day in source TZ",
-          "note": "The range is one calendar day in China (UTC+8) but viewers in the Americas see it cross into the next local date.",
-          "args": { "start": "2026-03-15 10:00 +8", "end": "2026-03-15 14:00 +8" }
+          "note": "The range is one calendar day in China (UTC+8) and Japan (UTC+9). Every US timezone from Eastern to Hawaii sees it cross into a different local date.",
+          "args": { "start": "2026-03-15 06:00 +8", "end": "2026-03-15 22:00 +8" }
         },
         {
           "title": "Crosses midnight in source TZ",
